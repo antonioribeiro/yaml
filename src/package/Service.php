@@ -293,4 +293,14 @@ class Service
             return $dir . DIRECTORY_SEPARATOR . $item;
         });
     }
+
+    /**
+     * Get this object instance.
+     *
+     * @return $this
+     */
+    public function instance()
+    {
+        return $this;
+    }
 }

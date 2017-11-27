@@ -1,6 +1,6 @@
 <?php
 
-namespace PragmaRX\Version\Package;
+namespace PragmaRX\YamlConf\Package;
 
 use Illuminate\Support\Facades\Facade as LaravelFacade;
 
@@ -13,6 +13,6 @@ class Facade extends LaravelFacade
      */
     protected static function getFacadeAccessor()
     {
-        return 'pragmarx.yaml-config';
+        return 'pragmarx.yaml-conf';
     }
 }

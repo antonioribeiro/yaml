@@ -12,7 +12,7 @@ class ServiceProvider extends IlluminateServiceProvider
      *
      * @var bool
      */
-    protected $defer = true;
+    protected $defer = false;
 
     /**
      * Register the service provider.
@@ -31,7 +31,7 @@ class ServiceProvider extends IlluminateServiceProvider
      */
     public function provides()
     {
-        return ['pragmarx.yaml-config'];
+        return ['pragmarx.yaml-conf'];
     }
 
     /**
@@ -39,7 +39,7 @@ class ServiceProvider extends IlluminateServiceProvider
      */
     private function registerService()
     {
-        $this->app->singleton('pragmarx.yaml-config', function ($app) {
+        $this->app->singleton('pragmarx.yaml-conf', function ($app) {
             return $app->make(YamlConf::class);
         });
     }

@@ -1,23 +1,28 @@
 <?php
 
-namespace PragmaRX\TestsWatcher\Tests;
+namespace PragmaRX\YamlConf\Tests;
 
-use PHPUnit\Framework\TestCase;
-use PragmaRX\TestsWatcher\Package\Services\Watcher;
+use PragmaRX\YamlConf\Package\Facade as YamlConf;
+use PragmaRX\YamlConf\Package\Service as YamlConfService;
 
-class DashboardTest extends TestCase
+class YamlConfTest extends TestCase
 {
-    private $watcher;
+    /**
+     * @var YamlConfService
+     */
+    private $yamlConf;
+
+    const currentYamlConf = '1.0.0';
 
     public function setUp()
     {
         parent::setup();
 
-        $this->watcher = app(Watcher::class);
+        $this->yamlConf = YamlConf::instance();
     }
 
-    public function test_can_instantiate_watcher()
+    public function test_can_instantiate_service()
     {
-        $this->assertInstanceOf(Watcher::class, $this->watcher);
+        $this->assertInstanceOf(YamlConfService::class, $this->yamlConf);
     }
 }
