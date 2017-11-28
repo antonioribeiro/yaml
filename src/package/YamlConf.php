@@ -5,9 +5,12 @@ namespace PragmaRX\YamlConf\Package;
 use Illuminate\Support\Collection;
 use Illuminate\Contracts\Support\Arrayable;
 use Symfony\Component\Yaml\Yaml as SymfonyYaml;
+use Symfony\Component\Yaml\Exception\ParseException;
 
 class YamlConf
 {
+    const NOT_RESOLVED = '!!__FUNCTION_NOT_RESOLVED__!!';
+
     protected $replaced = 0;
 
     /**
@@ -131,7 +134,7 @@ class YamlConf
     }
 
     /**
-     * Exaustively find and replace executable code.
+     * Exhaustively find and replace executable code.
      *
      * @param $contents
      * @return Collection
@@ -141,12 +144,57 @@ class YamlConf
         do {
             $this->replaced = 0;
 
-            $contents = $this->recursivelyFindAndReplaceExecutableCode($contents);
+            $contents = $this->recursivelyFindAndReplaceKeysToSelf(
+                $this->recursivelyFindAndReplaceExecutableCode($contents)
+            );
 
             config([$configKey => $contents->toArray()]);
         } while ($this->replaced > 0);
 
         return $contents;
+    }
+
+    /**
+     * Exhaustively find and replace executable code.
+     *
+     * @param $new
+     * @return Collection
+     */
+    public function recursivelyFindAndReplaceKeysToSelf($new, $keys = null)
+    {
+        $keys = is_null($keys) ? $new : $keys;
+
+        do {
+            $old = $new;
+
+            if (is_array($old instanceof Arrayable ? $old->toArray() : $old)) {
+                return collect($old)->map(function ($item) use ($keys) {
+                    return $this->recursivelyFindAndReplaceKeysToSelf($item, $keys);
+                });
+            }
+
+            $new = $this->replaceKeysToSelf($new, $keys);
+        } while ($old !== $new);
+
+        return $new;
+    }
+
+    /**
+     * Replace keys to self.
+     *
+     * @param $string
+     * @param $keys
+     * @return mixed
+     */
+    public function replaceKeysToSelf($string, $keys)
+    {
+        preg_match_all("/{{'(.*)'}}/", $string, $matches);
+
+        if ($matches[0]) {
+            return str_replace($matches[0][0], array_get($keys->toArray(), $matches[1][0]), $string);
+        }
+
+        return $string;
     }
 
     /**
@@ -184,7 +232,7 @@ class YamlConf
 
         foreach ($matches[0] as $key => $match) {
             if (count($match)) {
-                if (!is_null($resolved = $this->resolveVariable($matches[1][$key]))) {
+                if (($resolved = $this->resolveVariable($matches[1][$key])) !== self::NOT_RESOLVED) {
                     $contents = str_replace($matches[0][$key], $resolved, $contents);
                 }
             }
@@ -203,11 +251,16 @@ class YamlConf
     {
         $key = trim($key);
 
-        if ($result = $this->executeFunction($key)) {
+        if (($result = $this->executeFunction($key)) !== self::NOT_RESOLVED) {
             return $result;
         }
 
-        return config($key);
+        return self::NOT_RESOLVED;
+    }
+
+    public function variableIsKey($string)
+    {
+        return preg_match_all("/^{{'.*'}}$/", trim($string));
     }
 
     /**
@@ -226,7 +279,7 @@ class YamlConf
             return $function($this->removeQuotes($matches[2][0]));
         }
 
-        return null;
+        return self::NOT_RESOLVED;
     }
 
     /**
