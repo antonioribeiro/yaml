@@ -2,7 +2,6 @@
 
 namespace PragmaRX\YamlConf\Package;
 
-use PragmaRX\YamlConf\Package\Service as YamlConf;
 use Illuminate\Support\ServiceProvider as IlluminateServiceProvider;
 
 class ServiceProvider extends IlluminateServiceProvider

@@ -6,9 +6,9 @@ use Illuminate\Support\Collection;
 use Illuminate\Contracts\Support\Arrayable;
 use Symfony\Component\Yaml\Yaml as SymfonyYaml;
 
-class Service
+class YamlConf
 {
-    private $replaced = 0;
+    protected $replaced = 0;
 
     /**
      * Check if the string is a directory.
@@ -16,7 +16,7 @@ class Service
      * @param $item
      * @return bool
      */
-    private function isDirectory($item)
+    protected function isDirectory($item)
     {
         return
             is_dir($item) &&
@@ -29,12 +29,13 @@ class Service
      * @param $item
      * @return bool
      */
-    private function isYamlFile($item)
+    protected function isYamlFile($item)
     {
         return
-            !is_dir($item) &&
-            !ends_with(strtolower($item), '.yml') &&
-            !ends_with(strtolower($item), '.yaml');
+            is_file($item) && (
+                ends_with(strtolower($item), '.yml') ||
+                ends_with(strtolower($item), '.yaml')
+            );
     }
 
     /**
@@ -63,26 +64,43 @@ class Service
     /**
      * Load yaml files from directory and add to Laravel config.
      *
-     * @param string $directory
+     * @param string $path
      * @param string $configKey
      * @param bool $parseYaml
      * @return Collection
      */
-    public function loadToConfig($directory, $configKey, $parseYaml = true)
+    public function loadToConfig($path, $configKey, $parseYaml = true)
     {
         $loaded = $this->cleanArrayKeysRecursive(
-            $this->listFiles($directory)->mapWithKeys(function ($file, $key) use ($directory, $parseYaml) {
-                if ((is_string($file) && file_exists($file)) || is_array($file)) {
-                    list($file, $contents) = $this->loadFile($file, $parseYaml);
-
-                    return [($file ?: $key) => $contents];
-                }
-
-                return [$key => $file];
-            })
+            $this->isYamlFile($path)
+                ? $this->loadFile($path, $parseYaml)
+                : $this->loadFromDirectory($path, $parseYaml)
         );
 
         return $this->findAndReplaceExecutableCodeToExhaustion($loaded, $configKey);
+    }
+
+    /**
+     * Load all yaml files from a directory.
+     *
+     * @param $path
+     * @param $parseYaml
+     * @return \Illuminate\Support\Collection
+     */
+    public function loadFromDirectory($path, $parseYaml)
+    {
+        return $this->listFiles($path)->mapWithKeys(function ($file, $key) use ($path, $parseYaml) {
+            if ((is_string($file) && file_exists($file)) || is_array($file)) {
+                return [($file ?: $key) => $this->loadFile($file, $parseYaml)];
+            }
+
+            return [$key => $file];
+        });
+    }
+
+    public function isFile($path)
+    {
+        return !file_exists($path) && is_file($path);
     }
 
     /**
@@ -91,9 +109,14 @@ class Service
      * @param $contents
      * @return mixed
      */
-    private function parseFile($contents)
+    protected function parseFile($contents)
     {
-        return SymfonyYaml::parse($contents);
+        try {
+            return SymfonyYaml::parse($contents);
+        } catch (ParseException $e) {
+            printf("Unable to parse the YAML string: %s", $e->getMessage());
+        }
+
     }
 
     /**
@@ -102,7 +125,7 @@ class Service
      * @param $string
      * @return string
      */
-    private function removeQuotes($string)
+    protected function removeQuotes($string)
     {
         return trim(trim($string, "'"), '"');
     }
@@ -132,7 +155,7 @@ class Service
      * @param $old
      * @return Collection
      */
-    private function recursivelyFindAndReplaceExecutableCode($old)
+    protected function recursivelyFindAndReplaceExecutableCode($old)
     {
         if (is_array($old instanceof Arrayable ? $old->toArray() : $old)) {
             return collect($old)->map(function ($item) {
@@ -155,7 +178,7 @@ class Service
      * @param $contents
      * @return mixed
      */
-    private function replaceContents($contents)
+    protected function replaceContents($contents)
     {
         preg_match_all('/{{(.*)}}/', $contents, $matches);
 
@@ -176,7 +199,7 @@ class Service
      * @param $key
      * @return string
      */
-    private function resolveVariable($key)
+    protected function resolveVariable($key)
     {
         $key = trim($key);
 
@@ -193,7 +216,7 @@ class Service
      * @param $string
      * @return mixed
      */
-    private function executeFunction($string)
+    protected function executeFunction($string)
     {
         preg_match_all('/(.*)\((.*)\)/', $string, $matches);
 
@@ -213,7 +236,7 @@ class Service
      * @param bool $parseYaml
      * @return mixed|string
      */
-    private function loadFile($file, $parseYaml = true)
+    public function loadFile($file, $parseYaml = true)
     {
         if (is_array($file)) {
             return [
@@ -232,7 +255,7 @@ class Service
             $contents = $this->parseFile($contents);
         }
 
-        return [$file, $contents];
+        return $contents;
     }
 
     /**
@@ -287,7 +310,7 @@ class Service
      * @param string $dir
      * @return \Illuminate\Support\Collection
      */
-    private function scanDir($dir)
+    protected function scanDir($dir)
     {
         return collect(scandir($dir))->map(function ($item) use ($dir) {
             return $dir . DIRECTORY_SEPARATOR . $item;
