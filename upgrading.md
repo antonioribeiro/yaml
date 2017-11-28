@@ -1,4 +1,4 @@
-# Laravel Stats SDK Upgrading Guide
+# Laravel Yaml Configuration
 
 ## to 0.1.0
 
