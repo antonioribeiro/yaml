@@ -24,16 +24,6 @@ class ServiceProvider extends IlluminateServiceProvider
     }
 
     /**
-     * Get the services provided by the provider.
-     *
-     * @return array
-     */
-    public function provides()
-    {
-        return ['pragmarx.yaml-conf'];
-    }
-
-    /**
      * Register service service.
      */
     private function registerService()

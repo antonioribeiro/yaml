@@ -5,7 +5,7 @@ namespace PragmaRX\YamlConf\Package;
 use Illuminate\Support\Collection;
 use Illuminate\Contracts\Support\Arrayable;
 use Symfony\Component\Yaml\Yaml as SymfonyYaml;
-use Symfony\Component\Yaml\Exception\ParseException;
+use PragmaRX\YamlConf\Package\Exceptions\InvalidYamlFile;
 
 class YamlConf
 {
@@ -19,11 +19,12 @@ class YamlConf
      * @param $item
      * @return bool
      */
-    protected function isDirectory($item)
+    protected function isAllowedDirectory($item)
     {
         return
             is_dir($item) &&
-            (ends_with($item, '.') || ends_with($item, '..'));
+            !ends_with($item, DIRECTORY_SEPARATOR.'.') &&
+            !ends_with($item, DIRECTORY_SEPARATOR.'..');
     }
 
     /**
@@ -35,7 +36,7 @@ class YamlConf
     protected function isYamlFile($item)
     {
         return
-            is_file($item) && (
+            $this->isFile($item) && (
                 ends_with(strtolower($item), '.yml') ||
                 ends_with(strtolower($item), '.yaml')
             );
@@ -54,7 +55,7 @@ class YamlConf
         }
 
         return $this->scanDir($directory)->reject(function ($item) {
-            return $this->isDirectory($item) || $this->isYamlFile($item);
+            return !$this->isAllowedDirectory($item) && !$this->isYamlFile($item);
         })->mapWithKeys(function ($item, $key) {
             if (is_dir($item)) {
                 return [basename($item) => $this->listFiles($item)->toArray()];
@@ -94,6 +95,14 @@ class YamlConf
     {
         return $this->listFiles($path)->mapWithKeys(function ($file, $key) use ($path, $parseYaml) {
             if ((is_string($file) && file_exists($file)) || is_array($file)) {
+                if (is_array($file)) {
+                    $values = collect($file)->mapWithKeys(function ($subfile) use ($parseYaml) {
+                        return [$subfile => $this->loadFile($subfile, $parseYaml)];
+                    });
+
+                    return [$key => $values];
+                }
+
                 return [($file ?: $key) => $this->loadFile($file, $parseYaml)];
             }
 
@@ -103,7 +112,7 @@ class YamlConf
 
     public function isFile($path)
     {
-        return !file_exists($path) && is_file($path);
+        return file_exists($path) && is_file($path);
     }
 
     /**
@@ -111,15 +120,17 @@ class YamlConf
      *
      * @param $contents
      * @return mixed
+     * @throws InvalidYamlFile
      */
     protected function parseFile($contents)
     {
-        try {
-            return SymfonyYaml::parse($contents);
-        } catch (ParseException $e) {
-            printf("Unable to parse the YAML string: %s", $e->getMessage());
+        $yaml = SymfonyYaml::parse($contents);
+
+        if (is_string($yaml)) {
+            throw new InvalidYamlFile();
         }
 
+        return $yaml;
     }
 
     /**
@@ -188,10 +199,10 @@ class YamlConf
      */
     public function replaceKeysToSelf($string, $keys)
     {
-        preg_match_all("/{{'(.*)'}}/", $string, $matches);
+        preg_match_all("/\{\{'((?:[^{}]|(?R))*)\'\}\}/", $string, $matches);
 
-        if ($matches[0]) {
-            return str_replace($matches[0][0], array_get($keys->toArray(), $matches[1][0]), $string);
+        foreach ($matches[0] as $key => $value) {
+            $string = str_replace($matches[0][$key], array_get($keys->toArray(), $matches[1][$key]), $string);
         }
 
         return $string;
@@ -258,11 +269,6 @@ class YamlConf
         return self::NOT_RESOLVED;
     }
 
-    public function variableIsKey($string)
-    {
-        return preg_match_all("/^{{'.*'}}$/", trim($string));
-    }
-
     /**
      * Execute function.
      *
@@ -295,9 +301,7 @@ class YamlConf
             return [
                 false,
                 collect($file)->mapWithKeys(function($subfile, $key) use ($parseYaml) {
-                    list($subfile, $contents) = $this->loadFile($subfile, $parseYaml);
-
-                    return [$subfile => $contents];
+                    return [$subfile => $this->loadFile($subfile, $parseYaml)];
                 })->toArray()
             ];
         };

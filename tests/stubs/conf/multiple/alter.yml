@@ -1,0 +1,7 @@
+person:
+    name: 'Benoit'
+    address:
+      country: france
+environment:
+    app:
+      name: 'Not Laravel'

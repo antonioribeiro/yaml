@@ -1,0 +1,9 @@
+person:
+    name: 'Antonio Carlos'
+    address:
+      country: Brazil
+environment:
+    app:
+      name: "{{ config('app.name') }}"
+recursive:
+    name: "{{'app.person.name'}} {{'app.person.address.country'}}"
