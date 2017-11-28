@@ -379,4 +379,12 @@ class YamlConf
     {
         return $this;
     }
+
+    /**
+     * Convert array to yaml and save.
+     */
+    public function saveAsYaml($array, $file)
+    {
+        file_put_contents($file, SymfonyYaml::dump($array));
+    }
 }
