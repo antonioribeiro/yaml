@@ -6,67 +6,17 @@ use Traversable;
 use JsonSerializable;
 use Illuminate\Support\Collection;
 use Illuminate\Contracts\Support\Jsonable;
+use PragmaRX\YamlConf\Package\Support\File;
+use PragmaRX\YamlConf\Package\Support\Yaml;
 use Illuminate\Contracts\Support\Arrayable;
-use Symfony\Component\Yaml\Yaml as SymfonyYaml;
-use PragmaRX\YamlConf\Package\Exceptions\InvalidYamlFile;
 
 class YamlConf
 {
+    use File, Yaml;
+
     const NOT_RESOLVED = '!!__FUNCTION_NOT_RESOLVED__!!';
 
     protected $replaced = 0;
-
-    /**
-     * Check if the string is a directory.
-     *
-     * @param $item
-     * @return bool
-     */
-    protected function isAllowedDirectory($item)
-    {
-        return
-            is_dir($item) &&
-            !ends_with($item, DIRECTORY_SEPARATOR.'.') &&
-            !ends_with($item, DIRECTORY_SEPARATOR.'..');
-    }
-
-    /**
-     * Check if the file is a yaml file.
-     *
-     * @param $item
-     * @return bool
-     */
-    protected function isYamlFile($item)
-    {
-        return
-            $this->isFile($item) && (
-                ends_with(strtolower($item), '.yml') ||
-                ends_with(strtolower($item), '.yaml')
-            );
-    }
-
-    /**
-     * Get all files from dir.
-     *
-     * @param $directory
-     * @return \Illuminate\Support\Collection
-     */
-    public function listFiles($directory)
-    {
-        if (! file_exists($directory)) {
-            return collect([]);
-        }
-
-        return $this->scanDir($directory)->reject(function ($item) {
-            return !$this->isAllowedDirectory($item) && !$this->isYamlFile($item);
-        })->mapWithKeys(function ($item, $key) {
-            if (is_dir($item)) {
-                return [basename($item) => $this->listFiles($item)->toArray()];
-            }
-
-            return [$this->cleanKey($item) => $item];
-        });
-    }
 
     /**
      * Load yaml files from directory and add to Laravel config.
@@ -85,49 +35,6 @@ class YamlConf
         );
 
         return $this->findAndReplaceExecutableCodeToExhaustion($loaded, $configKey);
-    }
-
-    /**
-     * Load all yaml files from a directory.
-     *
-     * @param $path
-     * @param $parseYaml
-     * @return \Illuminate\Support\Collection
-     */
-    public function loadFromDirectory($path, $parseYaml)
-    {
-        return $this->listFiles($path)->mapWithKeys(function($file, $key) use ($parseYaml) {
-            return [$key => $this->loadFile($file, $parseYaml)];
-        });
-    }
-
-    /**
-     * Check if a string is a proper file.
-     *
-     * @param $path
-     * @return bool
-     */
-    public function isFile($path)
-    {
-        return is_string($path) && file_exists($path) && is_file($path);
-    }
-
-    /**
-     * Parse a yaml file.
-     *
-     * @param $contents
-     * @return mixed
-     * @throws InvalidYamlFile
-     */
-    protected function parseFile($contents)
-    {
-        $yaml = SymfonyYaml::parse($contents);
-
-        if (is_string($yaml)) {
-            throw new InvalidYamlFile();
-        }
-
-        return $yaml;
     }
 
     /**
@@ -303,24 +210,10 @@ class YamlConf
         $contents = file_get_contents($file);
 
         if ($parseYaml) {
-            $contents = $this->parseFile($contents);
+            $contents = $this->parse($contents);
         }
 
         return $contents;
-    }
-
-    /**
-     * Dump array to yaml.
-     *
-     * @param $input
-     * @param int $inline
-     * @param int $indent
-     * @param int $flags
-     * @return string
-     */
-    public function dump($input, $inline = 5, $indent = 4, $flags = 0)
-    {
-        return SymfonyYaml::dump($input, $inline, $indent, $flags);
     }
 
     /**
@@ -356,19 +249,6 @@ class YamlConf
     }
 
     /**
-     * Scan the directory for files.
-     *
-     * @param string $dir
-     * @return \Illuminate\Support\Collection
-     */
-    protected function scanDir($dir)
-    {
-        return collect(scandir($dir))->map(function ($item) use ($dir) {
-            return $dir . DIRECTORY_SEPARATOR . $item;
-        });
-    }
-
-    /**
      * Get this object instance.
      *
      * @return $this
@@ -376,20 +256,6 @@ class YamlConf
     public function instance()
     {
         return $this;
-    }
-
-    /**
-     * Convert array to yaml and save.
-     * @param $array array
-     * @param $file string
-     */
-    public function saveAsYaml($array, $file)
-    {
-        $array = $array instanceof Collection
-            ? $array->toArray()
-            : (array) $array;
-
-        file_put_contents($file, SymfonyYaml::dump($array));
     }
 
     /**
