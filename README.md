@@ -1,5 +1,5 @@
 # YamlConf
-### A Laravel app Yaml Config package
+### A Laravel app Yaml Config loader package
 
 [![Latest Stable YamlConf](https://img.shields.io/packagist/v/pragmarx/yaml-conf.svg?style=flat-square)](https://packagist.org/packages/pragmarx/yaml-conf)
 [![License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md) 
@@ -32,13 +32,14 @@ Then you would just have to use it like you usually do in Laravel
 config('myapp.multiple.second-level.third-level.alter.person.name')
 ```
 
-- Execute functions, like in the usual Laravel PHP array config.
+### Execute functions, like in the usual Laravel PHP array config.
 
 ``` php
 repository: "{{ env('APP_NAME') }}"
+path: "{{ storage_path('app') }}"
 ```
 
-- Config values can reference config keys, you just have to quote it this way:
+### Config values can reference config keys, you just have to quote it this way:
 
 ``` yaml
 {{'format.version'}}
