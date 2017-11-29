@@ -1,5 +1,5 @@
 # YamlConf
-### A Laravel app Yaml Config loader package
+### A Laravel app YAML Config loader package
 
 [![Latest Stable YamlConf](https://img.shields.io/packagist/v/pragmarx/yaml-conf.svg?style=flat-square)](https://packagist.org/packages/pragmarx/yaml-conf)
 [![License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md) 
@@ -58,7 +58,7 @@ format:
 Via Composer
 
 ``` bash
-$ composer require pragmarx/random
+$ composer require pragmarx/yaml-conf
 ```
 
 ## Using
@@ -96,26 +96,11 @@ config('my-package.name');
 Are your config files getting bigger and harder to maintain every day? Use Yaml format to load them!:
 
 ```
-current:
+app-version:
   major: 1
   minor: 0
   patch: 0
   format: "{$major}.{$minor}.{$patch}"
-cache:
-  enabled: true
-  key: pragmarx-version
-build:
-  mode: git-local # git-remote or number
-  number: 701031
-  git-local: "git rev-parse --verify HEAD"
-  git-remote: "git ls-remote {$repository} refs/heads/master"
-  repository: "{{ env('APP_GIT_REPOSITORY') }}"
-  length: 6
-format:
-  version: "{$major}.{$minor}.{$patch} (build {$build})"
-  full: "version {{'format.version'}}"
-  compact: "v{$major}.{$minor}.{$patch}-{$build}"
-  ## add as many formats as you need
 ```
 
 ## Minimum requirements
