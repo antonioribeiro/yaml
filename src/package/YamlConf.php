@@ -2,7 +2,10 @@
 
 namespace PragmaRX\YamlConf\Package;
 
+use Traversable;
+use JsonSerializable;
 use Illuminate\Support\Collection;
+use Illuminate\Contracts\Support\Jsonable;
 use Illuminate\Contracts\Support\Arrayable;
 use Symfony\Component\Yaml\Yaml as SymfonyYaml;
 use PragmaRX\YamlConf\Package\Exceptions\InvalidYamlFile;
@@ -61,7 +64,7 @@ class YamlConf
                 return [basename($item) => $this->listFiles($item)->toArray()];
             }
 
-            return [$key => $item];
+            return [$this->cleanKey($item) => $item];
         });
     }
 
@@ -93,26 +96,20 @@ class YamlConf
      */
     public function loadFromDirectory($path, $parseYaml)
     {
-        return $this->listFiles($path)->mapWithKeys(function ($file, $key) use ($path, $parseYaml) {
-            if ((is_string($file) && file_exists($file)) || is_array($file)) {
-                if (is_array($file)) {
-                    $values = collect($file)->mapWithKeys(function ($subfile) use ($parseYaml) {
-                        return [$subfile => $this->loadFile($subfile, $parseYaml)];
-                    });
-
-                    return [$key => $values];
-                }
-
-                return [($file ?: $key) => $this->loadFile($file, $parseYaml)];
-            }
-
-            return [$key => $file];
+        return $this->listFiles($path)->mapWithKeys(function($file, $key) use ($parseYaml) {
+            return [$key => $this->loadFile($file, $parseYaml)];
         });
     }
 
+    /**
+     * Check if a string is a proper file.
+     *
+     * @param $path
+     * @return bool
+     */
     public function isFile($path)
     {
-        return file_exists($path) && is_file($path);
+        return is_string($path) && file_exists($path) && is_file($path);
     }
 
     /**
@@ -298,12 +295,9 @@ class YamlConf
     public function loadFile($file, $parseYaml = true)
     {
         if (is_array($file)) {
-            return [
-                false,
-                collect($file)->mapWithKeys(function($subfile, $key) use ($parseYaml) {
-                    return [$subfile => $this->loadFile($subfile, $parseYaml)];
-                })->toArray()
-            ];
+            return collect($file)->mapWithKeys(function($subFile, $key) use ($parseYaml) {
+                return [$key => $this->loadFile($subFile, $parseYaml)];
+            })->toArray();
         };
 
         $contents = file_get_contents($file);
@@ -356,7 +350,7 @@ class YamlConf
      */
     public function cleanKey($key)
     {
-        return is_string($key) && file_exists($key)
+        return is_string($key) && file_exists(trim($key))
             ? preg_replace('/\.[^.]+$/', '', basename($key))
             : $key;
     }
@@ -386,9 +380,33 @@ class YamlConf
 
     /**
      * Convert array to yaml and save.
+     * @param $array array
+     * @param $file string
      */
     public function saveAsYaml($array, $file)
     {
+        $array = $array instanceof Collection
+            ? $array->toArray()
+            : (array) $array;
+
         file_put_contents($file, SymfonyYaml::dump($array));
+    }
+
+    /**
+     * Check if value is arrayable
+     *
+     * @param  mixed  $items
+     * @return bool
+     */
+    protected function isArrayable($items)
+    {
+        return
+            is_array($items) ||
+            $items instanceof self ||
+            $items instanceof Arrayable ||
+            $items instanceof Jsonable ||
+            $items instanceof JsonSerializable ||
+            $items instanceof Traversable
+            ;
     }
 }
