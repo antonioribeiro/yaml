@@ -7,7 +7,7 @@
 [![Code Quality](https://img.shields.io/scrutinizer/g/antonioribeiro/yaml-conf.svg?style=flat-square)](https://scrutinizer-yaml-conf.com/g/antonioribeiro/yaml-conf/?branch=master) 
 [![Build](https://img.shields.io/scrutinizer/build/g/antonioribeiro/yaml-conf.svg?style=flat-square)](https://scrutinizer-yaml-conf.com/g/antonioribeiro/yaml-conf/?branch=master) 
 [![Coverage](https://img.shields.io/scrutinizer/coverage/g/antonioribeiro/yaml-conf.svg?style=flat-square)](https://scrutinizer-yaml-conf.com/g/antonioribeiro/yaml-conf/?branch=master)
-[![StyleCI](https://styleyaml-conf.io/repos/112240358/shield)](https://styleyaml-conf.io/repos/112240358)
+[![StyleCI](https://styleci.io/repos/112240358/shield)](https://styleci.io/repos/112240358)
 
 ## Key features
 
