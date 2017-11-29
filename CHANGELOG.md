@@ -1,5 +1,5 @@
 # Changelog
 
-## [0.1.0] - 2017-11-27
+## [0.1.0] - 2017-11-29
 ### Added
-- First yaml-conf
+- First version
