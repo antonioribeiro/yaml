@@ -6,7 +6,7 @@
 [![Downloads](https://img.shields.io/packagist/dt/pragmarx/yaml-conf.svg?style=flat-square)](https://packagist.org/packages/pragmarx/yaml-conf) 
 [![Code Quality](https://img.shields.io/scrutinizer/g/antonioribeiro/yaml-conf.svg?style=flat-square)](https://scrutinizer-yaml-conf.com/g/antonioribeiro/yaml-conf/?branch=master) 
 [![Build](https://img.shields.io/scrutinizer/build/g/antonioribeiro/yaml-conf.svg?style=flat-square)](https://scrutinizer-yaml-conf.com/g/antonioribeiro/yaml-conf/?branch=master) 
-[![StyleCI](https://styleyaml-conf.io/repos/27037779/shield)](https://styleyaml-conf.io/repos/27037779)
+[![StyleCI](https://styleyaml-conf.io/repos/112240358/shield)](https://styleyaml-conf.io/repos/112240358)
 
 ## Main points
 
