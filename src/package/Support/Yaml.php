@@ -3,8 +3,8 @@
 namespace PragmaRX\YamlConf\Package\Support;
 
 use Illuminate\Support\Collection;
-use Symfony\Component\Yaml\Yaml as SymfonyYaml;
 use PragmaRX\YamlConf\Package\Exceptions\InvalidYamlFile;
+use Symfony\Component\Yaml\Yaml as SymfonyYaml;
 
 trait Yaml
 {
@@ -15,6 +15,7 @@ trait Yaml
      * @param int $inline
      * @param int $indent
      * @param int $flags
+     *
      * @return string
      */
     public function dump($input, $inline = 5, $indent = 4, $flags = 0)
@@ -26,6 +27,7 @@ trait Yaml
      * Check if the file is a yaml file.
      *
      * @param $item
+     *
      * @return bool
      */
     protected function isYamlFile($item)
@@ -41,8 +43,10 @@ trait Yaml
      * Parse a yaml file.
      *
      * @param $contents
-     * @return mixed
+     *
      * @throws InvalidYamlFile
+     *
+     * @return mixed
      */
     protected function parse($contents)
     {
@@ -57,6 +61,7 @@ trait Yaml
 
     /**
      * Convert array to yaml and save.
+     *
      * @param $array array
      * @param $file string
      */
