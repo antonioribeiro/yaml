@@ -8,6 +8,7 @@ trait File
      * Check if the string is a directory.
      *
      * @param $item
+     *
      * @return bool
      */
     protected function isAllowedDirectory($item)
@@ -22,11 +23,12 @@ trait File
      * Get all files from dir.
      *
      * @param $directory
+     *
      * @return \Illuminate\Support\Collection
      */
     public function listFiles($directory)
     {
-        if (! file_exists($directory)) {
+        if (!file_exists($directory)) {
             return collect([]);
         }
 
@@ -46,11 +48,12 @@ trait File
      *
      * @param $path
      * @param $parseYaml
+     *
      * @return \Illuminate\Support\Collection
      */
     public function loadFromDirectory($path, $parseYaml)
     {
-        return $this->listFiles($path)->mapWithKeys(function($file, $key) use ($parseYaml) {
+        return $this->listFiles($path)->mapWithKeys(function ($file, $key) use ($parseYaml) {
             return [$key => $this->loadFile($file, $parseYaml)];
         });
     }
@@ -59,6 +62,7 @@ trait File
      * Check if a string is a proper file.
      *
      * @param $path
+     *
      * @return bool
      */
     public function isFile($path)
@@ -70,12 +74,13 @@ trait File
      * Scan the directory for files.
      *
      * @param string $dir
+     *
      * @return \Illuminate\Support\Collection
      */
     protected function scanDir($dir)
     {
         return collect(scandir($dir))->map(function ($item) use ($dir) {
-            return $dir . DIRECTORY_SEPARATOR . $item;
+            return $dir.DIRECTORY_SEPARATOR.$item;
         });
     }
 }

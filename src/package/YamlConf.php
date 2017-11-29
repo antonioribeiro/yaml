@@ -2,13 +2,13 @@
 
 namespace PragmaRX\YamlConf\Package;
 
-use Traversable;
-use JsonSerializable;
-use Illuminate\Support\Collection;
+use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Support\Jsonable;
+use Illuminate\Support\Collection;
+use JsonSerializable;
 use PragmaRX\YamlConf\Package\Support\File;
 use PragmaRX\YamlConf\Package\Support\Yaml;
-use Illuminate\Contracts\Support\Arrayable;
+use Traversable;
 
 class YamlConf
 {
@@ -23,7 +23,8 @@ class YamlConf
      *
      * @param string $path
      * @param string $configKey
-     * @param bool $parseYaml
+     * @param bool   $parseYaml
+     *
      * @return Collection
      */
     public function loadToConfig($path, $configKey, $parseYaml = true)
@@ -41,6 +42,7 @@ class YamlConf
      * Remove quotes.
      *
      * @param $string
+     *
      * @return string
      */
     protected function removeQuotes($string)
@@ -52,6 +54,7 @@ class YamlConf
      * Exhaustively find and replace executable code.
      *
      * @param $contents
+     *
      * @return Collection
      */
     public function findAndReplaceExecutableCodeToExhaustion($contents, $configKey)
@@ -73,6 +76,7 @@ class YamlConf
      * Exhaustively find and replace executable code.
      *
      * @param $new
+     *
      * @return Collection
      */
     public function recursivelyFindAndReplaceKeysToSelf($new, $keys = null)
@@ -99,6 +103,7 @@ class YamlConf
      *
      * @param $string
      * @param $keys
+     *
      * @return mixed
      */
     public function replaceKeysToSelf($string, $keys)
@@ -116,6 +121,7 @@ class YamlConf
      * Replace contents.
      *
      * @param $old
+     *
      * @return Collection
      */
     protected function recursivelyFindAndReplaceExecutableCode($old)
@@ -139,6 +145,7 @@ class YamlConf
      * Replace contents.
      *
      * @param $contents
+     *
      * @return mixed
      */
     protected function replaceContents($contents)
@@ -160,6 +167,7 @@ class YamlConf
      * Resolve variable.
      *
      * @param $key
+     *
      * @return string
      */
     protected function resolveVariable($key)
@@ -177,6 +185,7 @@ class YamlConf
      * Execute function.
      *
      * @param $string
+     *
      * @return mixed
      */
     protected function executeFunction($string)
@@ -197,15 +206,16 @@ class YamlConf
      *
      * @param $file
      * @param bool $parseYaml
+     *
      * @return mixed|string
      */
     public function loadFile($file, $parseYaml = true)
     {
         if (is_array($file)) {
-            return collect($file)->mapWithKeys(function($subFile, $key) use ($parseYaml) {
+            return collect($file)->mapWithKeys(function ($subFile, $key) use ($parseYaml) {
                 return [$key => $this->loadFile($subFile, $parseYaml)];
             })->toArray();
-        };
+        }
 
         $contents = file_get_contents($file);
 
@@ -220,6 +230,7 @@ class YamlConf
      * Remove extension from file name.
      *
      * @param $dirty
+     *
      * @return \Illuminate\Support\Collection|mixed
      */
     public function cleanArrayKeysRecursive($dirty)
@@ -227,7 +238,7 @@ class YamlConf
         if (is_array($dirty instanceof Arrayable ? $dirty->toArray() : $dirty)) {
             return collect($dirty)->mapWithKeys(function ($item, $key) {
                 return [
-                    $this->cleanKey($key) => $this->cleanArrayKeysRecursive($item)
+                    $this->cleanKey($key) => $this->cleanArrayKeysRecursive($item),
                 ];
             });
         }
@@ -239,6 +250,7 @@ class YamlConf
      * Clean the array key.
      *
      * @param $key
+     *
      * @return mixed|string
      */
     public function cleanKey($key)
@@ -259,9 +271,10 @@ class YamlConf
     }
 
     /**
-     * Check if value is arrayable
+     * Check if value is arrayable.
      *
-     * @param  mixed  $items
+     * @param mixed $items
+     *
      * @return bool
      */
     protected function isArrayable($items)
@@ -272,7 +285,6 @@ class YamlConf
             $items instanceof Arrayable ||
             $items instanceof Jsonable ||
             $items instanceof JsonSerializable ||
-            $items instanceof Traversable
-            ;
+            $items instanceof Traversable;
     }
 }
