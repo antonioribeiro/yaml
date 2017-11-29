@@ -1,19 +1,43 @@
 # YamlConf
-### A Laravel app YAML Config loader package
+### A Laravel app YAML Config loader
 
 [![Latest Stable YamlConf](https://img.shields.io/packagist/v/pragmarx/yaml-conf.svg?style=flat-square)](https://packagist.org/packages/pragmarx/yaml-conf)
 [![License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md) 
-[![Downloads](https://img.shields.io/packagist/dt/pragmarx/yaml-conf.svg?style=flat-square)](https://packagist.org/packages/pragmarx/yaml-conf) 
+<!--[![Downloads](https://img.shields.io/packagist/dt/pragmarx/yaml-conf.svg?style=flat-square)](https://packagist.org/packages/pragmarx/yaml-conf)--> 
 [![Code Quality](https://img.shields.io/scrutinizer/g/antonioribeiro/yaml-conf.svg?style=flat-square)](https://scrutinizer-yaml-conf.com/g/antonioribeiro/yaml-conf/?branch=master) 
 [![Build](https://img.shields.io/scrutinizer/build/g/antonioribeiro/yaml-conf.svg?style=flat-square)](https://scrutinizer-yaml-conf.com/g/antonioribeiro/yaml-conf/?branch=master) 
 [![Coverage](https://img.shields.io/scrutinizer/coverage/g/antonioribeiro/yaml-conf.svg?style=flat-square)](https://scrutinizer-yaml-conf.com/g/antonioribeiro/yaml-conf/?branch=master)
 [![StyleCI](https://styleci.io/repos/112240358/shield)](https://styleci.io/repos/112240358)
 
+## Rationale
+
+Config files getting bigger, harder to maintain and look at, every day. Use Yaml format to load them!:
+
+```
+app-version:
+  major: 1
+  minor: 0
+  patch: 0
+  format: "{$major}.{$minor}.{$patch}"
+```
+
 ## Key features
 
-### Load one file or a whole directory, recursively, so all those files would be loaded with a single command
+### Load one file 
 
 ``` php
+YamlConfig::loadToConfig(config_path('myapp.yml'), 'my-app');
+```
+
+## Or a whole directory, recursively, so all those files would be loaded with a single command
+
+``` php
+YamlConfig::loadToConfig(config_path('myapp'), 'my-app');
+```
+
+To load a directory with all your config files:
+
+``` text
 .
 └── myapp
     ├── multiple
@@ -46,12 +70,11 @@ path: "{{ storage_path('app') }}"
 {{'format.version'}}
 ```
 
-Here's an example showing `format.full` using `format.version` as value:
+### You can add comments to your YAML files, something JSON wouldn't let you do
 
 ``` yaml
-format:
-  version: "{$major}.{$minor}.{$patch} (build {$build})"
-  full: "version {{'format.version'}}"
+build:
+  mode: git-local  #### other modes: git-remote or number
 ```
 
 ## Install
@@ -83,7 +106,7 @@ $this->app
 Or use the Facade:
 
 ``` php
-YamlConfig::loadToConfig(config_path('myconf.yml'), 'my-package');
+YamlConfig::loadToConfig(config_path('myapp.yml'), 'my-package');
 ```
 
 And it's merged to your Laravel config:
@@ -92,16 +115,31 @@ And it's merged to your Laravel config:
 config('my-package.name');
 ```
 
-## But... why?!
+## Example
 
-Are your config files getting bigger and harder to maintain every day? Use Yaml format to load them!:
+This is a YAML file from another package using this package:
 
-```
-app-version:
+``` yaml
+current:
   major: 1
   minor: 0
   patch: 0
   format: "{$major}.{$minor}.{$patch}"
+cache:
+  enabled: true
+  key: pragmarx-version
+build:
+  mode: git-local # git-remote or number
+  number: 701031
+  git-local: "git rev-parse --verify HEAD"
+  git-remote: "git ls-remote {$repository} refs/heads/master"
+  repository: "{{ env('APP_GIT_REPOSITORY') }}"
+  length: 6
+format:
+  version: "{$major}.{$minor}.{$patch} (build {$build})"
+  full: "version {{'format.version'}}"
+  compact: "v{$major}.{$minor}.{$patch}-{$build}"
+  ## add as many formats as you need
 ```
 
 ## Minimum requirements
