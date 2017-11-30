@@ -76,6 +76,20 @@ build:
   mode: git-local  #### other modes: git-remote or number
 ```
 
+## Parser and dumper methods
+
+In case you need to deal with YAML directly, you can use these public methods:
+
+``` php
+Yaml::parse($input, $flags) // Parses YAML into a PHP value.
+
+Yaml::parseFile($filename, $flags) // Parses a YAML file into a PHP value.
+
+Yaml::dump($input, $inline, $indent, $flags) // Dumps a PHP value to a YAML string.
+```
+
+Which are simple bridges to [Symfony's YAML](https://symfony.com/doc/current/components/yaml.html).
+
 ## Install
 
 Via Composer
