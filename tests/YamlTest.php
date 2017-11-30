@@ -12,7 +12,7 @@ class YamlTest extends TestCase
     /**
      * @var YamlService
      */
-    private $yamlConf;
+    private $yaml;
 
     /**
      * @var Collection
@@ -28,16 +28,16 @@ class YamlTest extends TestCase
     {
         parent::setup();
 
-        $this->yamlConf = YamlFacade::instance();
+        $this->yaml = YamlFacade::instance();
 
-        $this->multiple = $this->yamlConf->loadToConfig(__DIR__.'/stubs/conf/multiple', 'multiple');
+        $this->multiple = $this->yaml->loadToConfig(__DIR__.'/stubs/conf/multiple', 'multiple');
 
-        $this->single = $this->yamlConf->loadToConfig(__DIR__.'/stubs/conf/single/single-app.yml', 'single');
+        $this->single = $this->yaml->loadToConfig(__DIR__.'/stubs/conf/single/single-app.yml', 'single');
     }
 
     public function test_can_instantiate_service()
     {
-        $this->assertInstanceOf(YamlService::class, $this->yamlConf);
+        $this->assertInstanceOf(YamlService::class, $this->yaml);
     }
 
     public function test_loaded_results()
@@ -58,23 +58,23 @@ class YamlTest extends TestCase
 
     public function test_can_list_files()
     {
-        $this->assertEquals(3, $this->yamlConf->listFiles(__DIR__.'/stubs/conf/multiple')->count());
-        $this->assertEquals(1, $this->yamlConf->listFiles(__DIR__.'/stubs/conf/single')->count());
-        $this->assertEquals(0, $this->yamlConf->listFiles(__DIR__.'/stubs/conf/non-existent')->count());
+        $this->assertEquals(3, $this->yaml->listFiles(__DIR__.'/stubs/conf/multiple')->count());
+        $this->assertEquals(1, $this->yaml->listFiles(__DIR__.'/stubs/conf/single')->count());
+        $this->assertEquals(0, $this->yaml->listFiles(__DIR__.'/stubs/conf/non-existent')->count());
     }
 
     public function test_can_detect_invalid_yaml_files()
     {
         $this->expectException(InvalidYamlFile::class);
 
-        $this->yamlConf->loadToConfig(__DIR__.'/stubs/conf/wrong/invalid.yml', 'wrong');
+        $this->yaml->loadToConfig(__DIR__.'/stubs/conf/wrong/invalid.yml', 'wrong');
     }
 
     public function test_can_dump_yaml_files()
     {
         $this->assertEquals(
             $this->cleanYamlString(file_get_contents(__DIR__.'/stubs/conf/single/single-app.yml')),
-            $this->cleanYamlString($this->yamlConf->dump($this->single->toArray()))
+            $this->cleanYamlString($this->yaml->dump($this->single->toArray()))
         );
     }
 
@@ -82,17 +82,26 @@ class YamlTest extends TestCase
     {
         $this->assertEquals(
             $this->cleanYamlString(file_get_contents(__DIR__.'/stubs/conf/single/single-app.yml')),
-            $this->cleanYamlString($this->yamlConf->dump($this->single->toArray()))
+            $this->cleanYamlString($this->yaml->dump($this->single->toArray()))
         );
     }
 
     public function test_can_save_yaml()
     {
-        $this->yamlConf->saveAsYaml($this->single, $file = $this->getTempFile());
+        $this->yaml->saveAsYaml($this->single, $file = $this->getTempFile());
 
-        $saved = $this->yamlConf->loadToConfig($file, 'saved');
+        $saved = $this->yaml->loadToConfig($file, 'saved');
 
         $this->assertEquals($this->single, $saved);
+    }
+
+    public function test_can_parse_yaml()
+    {
+        $this->assertEquals(['version' => 1], $this->yaml->parse('version: 1'));
+
+        $this->expectException(InvalidYamlFile::class);
+
+        $this->yaml->parse('version = 1');
     }
 
     public function cleanYamlString($string)
