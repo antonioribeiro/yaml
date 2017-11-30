@@ -6,7 +6,7 @@
 [![Code Quality](https://img.shields.io/scrutinizer/g/antonioribeiro/yaml.svg?style=flat-square)](https://scrutinizer-yaml.com/g/antonioribeiro/yaml/?branch=master) 
 [![Build](https://img.shields.io/scrutinizer/build/g/antonioribeiro/yaml.svg?style=flat-square)](https://scrutinizer-yaml.com/g/antonioribeiro/yaml/?branch=master) 
 [![Coverage](https://img.shields.io/scrutinizer/coverage/g/antonioribeiro/yaml.svg?style=flat-square)](https://scrutinizer-yaml.com/g/antonioribeiro/yaml/?branch=master)
-[![StyleCI](https://styleci.io/repos/112240358/shield)](https://styleci.io/repos/112240358)
+[![StyleCI](https://styleci.io/repos/112624437/shield)](https://styleci.io/repos/112624437)
 
 ## Rationale
 
