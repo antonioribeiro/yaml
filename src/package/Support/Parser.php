@@ -48,15 +48,44 @@ trait Parser
      *
      * @return mixed
      */
-    protected function parse($contents)
+    public function parse($contents)
     {
-        $yaml = SymfonyYaml::parse($contents);
+        return $this->checkYaml(
+            SymfonyYaml::parse($contents)
+        );
+    }
 
-        if (is_string($yaml)) {
+    /**
+     * Check parsed contents.
+     *
+     * @param $contents
+     * @return array
+     * @throws InvalidYamlFile
+     */
+    public function checkYaml($contents)
+    {
+        if (is_string($contents)) {
             throw new InvalidYamlFile();
         }
 
-        return $yaml;
+        return $contents;
+    }
+
+    /**
+     * Parses a YAML file into a PHP value.
+     *
+     * @param string $filename The path to the YAML file to be parsed
+     * @param int    $flags    A bit field of PARSE_* constants to customize the YAML parser behavior
+     *
+     * @return mixed The YAML converted to a PHP value
+     *
+     * @throws \PragmaRX\Yaml\Package\Exceptions\InvalidYamlFile If the file could not be read or the YAML is not valid
+     */
+    public function parseFile($filename, $flags = 0)
+    {
+        return $this->checkYaml(
+            SymfonyYaml::parseFile($filename, $flags)
+        );
     }
 
     /**

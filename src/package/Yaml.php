@@ -19,16 +19,15 @@ class Yaml
      *
      * @param string $path
      * @param string $configKey
-     * @param bool   $parseYaml
      *
      * @return Collection
      */
-    public function loadToConfig($path, $configKey, $parseYaml = true)
+    public function loadToConfig($path, $configKey)
     {
         $loaded = $this->cleanArrayKeysRecursive(
             $this->isYamlFile($path)
-                ? $this->loadFile($path, $parseYaml)
-                : $this->loadFromDirectory($path, $parseYaml)
+                ? $this->loadFile($path)
+                : $this->loadFromDirectory($path)
         );
 
         return $this->findAndReplaceExecutableCodeToExhaustion($loaded, $configKey);
@@ -201,25 +200,18 @@ class Yaml
      * Load yaml file.
      *
      * @param $file
-     * @param bool $parseYaml
      *
      * @return mixed|string
      */
-    public function loadFile($file, $parseYaml = true)
+    public function loadFile($file)
     {
         if (is_array($file)) {
-            return collect($file)->mapWithKeys(function ($subFile, $key) use ($parseYaml) {
-                return [$key => $this->loadFile($subFile, $parseYaml)];
+            return collect($file)->mapWithKeys(function ($subFile, $key) {
+                return [$key => $this->loadFile($subFile)];
             })->toArray();
         }
 
-        $contents = file_get_contents($file);
-
-        if ($parseYaml) {
-            $contents = $this->parse($contents);
-        }
-
-        return $contents;
+        return $this->parseFile($file);
     }
 
     /**

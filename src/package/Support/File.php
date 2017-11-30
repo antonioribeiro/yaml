@@ -47,14 +47,13 @@ trait File
      * Load all yaml files from a directory.
      *
      * @param $path
-     * @param $parseYaml
      *
      * @return \Illuminate\Support\Collection
      */
-    public function loadFromDirectory($path, $parseYaml)
+    public function loadFromDirectory($path)
     {
-        return $this->listFiles($path)->mapWithKeys(function ($file, $key) use ($parseYaml) {
-            return [$key => $this->loadFile($file, $parseYaml)];
+        return $this->listFiles($path)->mapWithKeys(function ($file, $key) {
+            return [$key => $this->loadFile($file)];
         });
     }
 
