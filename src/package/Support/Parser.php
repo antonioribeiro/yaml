@@ -1,12 +1,12 @@
 <?php
 
-namespace PragmaRX\YamlConf\Package\Support;
+namespace PragmaRX\Yaml\Package\Support;
 
 use Illuminate\Support\Collection;
-use PragmaRX\YamlConf\Package\Exceptions\InvalidYamlFile;
+use PragmaRX\Yaml\Package\Exceptions\InvalidYamlFile;
 use Symfony\Component\Yaml\Yaml as SymfonyYaml;
 
-trait Yaml
+trait Parser
 {
     /**
      * Dump array to yaml.

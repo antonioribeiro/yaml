@@ -1,6 +1,6 @@
 <?php
 
-namespace PragmaRX\YamlConf\Package\Exceptions;
+namespace PragmaRX\Yaml\Package\Exceptions;
 
 class InvalidYamlFile extends \Exception
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace PragmaRX\YamlConf\Package;
+namespace PragmaRX\Yaml\Package;
 
 use Illuminate\Support\ServiceProvider as IlluminateServiceProvider;
 
@@ -28,8 +28,8 @@ class ServiceProvider extends IlluminateServiceProvider
      */
     private function registerService()
     {
-        $this->app->singleton('pragmarx.yaml-conf', function ($app) {
-            return $app->make(YamlConf::class);
+        $this->app->singleton('pragmarx.yaml', function ($app) {
+            return $app->make(Yaml::class);
         });
     }
 }

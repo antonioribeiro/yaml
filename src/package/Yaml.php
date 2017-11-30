@@ -1,18 +1,18 @@
 <?php
 
-namespace PragmaRX\YamlConf\Package;
+namespace PragmaRX\Yaml\Package;
 
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Support\Jsonable;
 use Illuminate\Support\Collection;
 use JsonSerializable;
-use PragmaRX\YamlConf\Package\Support\File;
-use PragmaRX\YamlConf\Package\Support\Yaml;
+use PragmaRX\Yaml\Package\Support\File;
+use PragmaRX\Yaml\Package\Support\Parser;
 use Traversable;
 
-class YamlConf
+class Yaml
 {
-    use File, Yaml;
+    use File, Parser;
 
     const NOT_RESOLVED = '!!__FUNCTION_NOT_RESOLVED__!!';
 

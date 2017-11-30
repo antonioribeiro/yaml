@@ -30,8 +30,8 @@
 
     "autoload": {
         "psr-4": {
-            "PragmaRX\\YamlConf\\Package\\": "src/package",
-            "PragmaRX\\YamlConf\\Tests\\": "tests/"
+            "PragmaRX\\Yaml\\Package\\": "src/package",
+            "PragmaRX\\Yaml\\Tests\\": "tests/"
         }
     },
 
@@ -39,10 +39,10 @@
         "component": "package",
         "laravel": {
             "providers": [
-                "PragmaRX\\YamlConf\\Package\\ServiceProvider"
+                "PragmaRX\\Yaml\\Package\\ServiceProvider"
             ],
             "aliases": {
-                "YamlConf": "PragmaRX\\YamlConf\\Package\\Facade"
+                "Yaml": "PragmaRX\\Yaml\\Package\\Facade"
             }
         }
     }

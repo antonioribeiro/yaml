@@ -1,16 +1,16 @@
 <?php
 
-namespace PragmaRX\YamlConf\Tests;
+namespace PragmaRX\Yaml\Tests;
 
 use Illuminate\Support\Collection;
-use PragmaRX\YamlConf\Package\Exceptions\InvalidYamlFile;
-use PragmaRX\YamlConf\Package\Facade as YamlConfFacade;
-use PragmaRX\YamlConf\Package\YamlConf as YamlConfService;
+use PragmaRX\Yaml\Package\Exceptions\InvalidYamlFile;
+use PragmaRX\Yaml\Package\Facade as YamlFacade;
+use PragmaRX\Yaml\Package\Yaml as YamlService;
 
-class YamlConfTest extends TestCase
+class YamlTest extends TestCase
 {
     /**
-     * @var YamlConfService
+     * @var YamlService
      */
     private $yamlConf;
 
@@ -28,7 +28,7 @@ class YamlConfTest extends TestCase
     {
         parent::setup();
 
-        $this->yamlConf = YamlConfFacade::instance();
+        $this->yamlConf = YamlFacade::instance();
 
         $this->multiple = $this->yamlConf->loadToConfig(__DIR__.'/stubs/conf/multiple', 'multiple');
 
@@ -37,7 +37,7 @@ class YamlConfTest extends TestCase
 
     public function test_can_instantiate_service()
     {
-        $this->assertInstanceOf(YamlConfService::class, $this->yamlConf);
+        $this->assertInstanceOf(YamlService::class, $this->yamlConf);
     }
 
     public function test_loaded_results()

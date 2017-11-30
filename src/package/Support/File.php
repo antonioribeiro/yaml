@@ -1,6 +1,6 @@
 <?php
 
-namespace PragmaRX\YamlConf\Package\Support;
+namespace PragmaRX\Yaml\Package\Support;
 
 trait File
 {

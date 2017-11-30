@@ -1,7 +1,7 @@
-# YamlConf
-### A Laravel app YAML Config loader
+# Laravel YAML
+### A Laravel YAML parser and config loader
 
-[![Latest Stable YamlConf](https://img.shields.io/packagist/v/pragmarx/yaml-conf.svg?style=flat-square)](https://packagist.org/packages/pragmarx/yaml-conf)
+[![Latest Stable Yaml](https://img.shields.io/packagist/v/pragmarx/yaml-conf.svg?style=flat-square)](https://packagist.org/packages/pragmarx/yaml-conf)
 [![License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md) 
 [![Code Quality](https://img.shields.io/scrutinizer/g/antonioribeiro/yaml-conf.svg?style=flat-square)](https://scrutinizer-yaml-conf.com/g/antonioribeiro/yaml-conf/?branch=master) 
 [![Build](https://img.shields.io/scrutinizer/build/g/antonioribeiro/yaml-conf.svg?style=flat-square)](https://scrutinizer-yaml-conf.com/g/antonioribeiro/yaml-conf/?branch=master) 
@@ -22,16 +22,16 @@ app-version:
 
 ## Key features
 
-### Load one file 
+### Load one file to Laravel config 
 
 ``` php
-YamlConfig::loadToConfig(config_path('myapp.yml'), 'my-app');
+Yaml::loadToConfig(config_path('myapp.yml'), 'my-app');
 ```
 
 ## Or a whole directory, recursively, so all those files would be loaded with a single command
 
 ``` php
-YamlConfig::loadToConfig(config_path('myapp'), 'my-app');
+Yaml::loadToConfig(config_path('myapp'), 'my-app');
 ```
 
 To load a directory with all your config files:
@@ -105,7 +105,7 @@ $this->app
 Or use the Facade:
 
 ``` php
-YamlConfig::loadToConfig(config_path('myapp.yml'), 'my-package');
+Yaml::loadToConfig(config_path('myapp.yml'), 'my-package');
 ```
 
 And it's merged to your Laravel config:
