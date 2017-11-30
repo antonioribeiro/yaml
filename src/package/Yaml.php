@@ -2,13 +2,9 @@
 
 namespace PragmaRX\Yaml\Package;
 
-use Illuminate\Contracts\Support\Arrayable;
-use Illuminate\Contracts\Support\Jsonable;
 use Illuminate\Support\Collection;
-use JsonSerializable;
 use PragmaRX\Yaml\Package\Support\File;
 use PragmaRX\Yaml\Package\Support\Parser;
-use Traversable;
 
 class Yaml
 {
@@ -86,7 +82,7 @@ class Yaml
         do {
             $old = $new;
 
-            if (is_array($old instanceof Arrayable ? $old->toArray() : $old)) {
+            if (is_array($old instanceof Collection ? $old->toArray() : $old)) {
                 return collect($old)->map(function ($item) use ($keys) {
                     return $this->recursivelyFindAndReplaceKeysToSelf($item, $keys);
                 });
@@ -126,7 +122,7 @@ class Yaml
      */
     protected function recursivelyFindAndReplaceExecutableCode($old)
     {
-        if (is_array($old instanceof Arrayable ? $old->toArray() : $old)) {
+        if (is_array($old instanceof Collection ? $old->toArray() : $old)) {
             return collect($old)->map(function ($item) {
                 return $this->recursivelyFindAndReplaceExecutableCode($item);
             });
@@ -235,7 +231,7 @@ class Yaml
      */
     public function cleanArrayKeysRecursive($dirty)
     {
-        if (is_array($dirty instanceof Arrayable ? $dirty->toArray() : $dirty)) {
+        if (is_array($dirty instanceof Collection ? $dirty->toArray() : $dirty)) {
             return collect($dirty)->mapWithKeys(function ($item, $key) {
                 return [
                     $this->cleanKey($key) => $this->cleanArrayKeysRecursive($item),
@@ -268,23 +264,5 @@ class Yaml
     public function instance()
     {
         return $this;
-    }
-
-    /**
-     * Check if value is arrayable.
-     *
-     * @param mixed $items
-     *
-     * @return bool
-     */
-    protected function isArrayable($items)
-    {
-        return
-            is_array($items) ||
-            $items instanceof self ||
-            $items instanceof Arrayable ||
-            $items instanceof Jsonable ||
-            $items instanceof JsonSerializable ||
-            $items instanceof Traversable;
     }
 }
