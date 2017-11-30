@@ -59,8 +59,10 @@ trait Parser
      * Check parsed contents.
      *
      * @param $contents
-     * @return array
+     *
      * @throws InvalidYamlFile
+     *
+     * @return array
      */
     public function checkYaml($contents)
     {
@@ -77,9 +79,9 @@ trait Parser
      * @param string $filename The path to the YAML file to be parsed
      * @param int    $flags    A bit field of PARSE_* constants to customize the YAML parser behavior
      *
-     * @return mixed The YAML converted to a PHP value
-     *
      * @throws \PragmaRX\Yaml\Package\Exceptions\InvalidYamlFile If the file could not be read or the YAML is not valid
+     *
+     * @return mixed The YAML converted to a PHP value
      */
     public function parseFile($filename, $flags = 0)
     {
