@@ -1,11 +1,11 @@
 # Laravel YAML
 ### A Laravel YAML parser and config loader
 
-[![Latest Stable Yaml](https://img.shields.io/packagist/v/pragmarx/yaml-conf.svg?style=flat-square)](https://packagist.org/packages/pragmarx/yaml-conf)
+[![Latest Stable Yaml](https://img.shields.io/packagist/v/pragmarx/yaml.svg?style=flat-square)](https://packagist.org/packages/pragmarx/yaml)
 [![License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md) 
-[![Code Quality](https://img.shields.io/scrutinizer/g/antonioribeiro/yaml-conf.svg?style=flat-square)](https://scrutinizer-yaml-conf.com/g/antonioribeiro/yaml-conf/?branch=master) 
-[![Build](https://img.shields.io/scrutinizer/build/g/antonioribeiro/yaml-conf.svg?style=flat-square)](https://scrutinizer-yaml-conf.com/g/antonioribeiro/yaml-conf/?branch=master) 
-[![Coverage](https://img.shields.io/scrutinizer/coverage/g/antonioribeiro/yaml-conf.svg?style=flat-square)](https://scrutinizer-yaml-conf.com/g/antonioribeiro/yaml-conf/?branch=master)
+[![Code Quality](https://img.shields.io/scrutinizer/g/antonioribeiro/yaml.svg?style=flat-square)](https://scrutinizer-yaml.com/g/antonioribeiro/yaml/?branch=master) 
+[![Build](https://img.shields.io/scrutinizer/build/g/antonioribeiro/yaml.svg?style=flat-square)](https://scrutinizer-yaml.com/g/antonioribeiro/yaml/?branch=master) 
+[![Coverage](https://img.shields.io/scrutinizer/coverage/g/antonioribeiro/yaml.svg?style=flat-square)](https://scrutinizer-yaml.com/g/antonioribeiro/yaml/?branch=master)
 [![StyleCI](https://styleci.io/repos/112240358/shield)](https://styleci.io/repos/112240358)
 
 ## Rationale
@@ -81,7 +81,7 @@ build:
 Via Composer
 
 ``` bash
-$ composer require pragmarx/yaml-conf
+$ composer require pragmarx/yaml
 ```
 
 ## Using
@@ -98,7 +98,7 @@ Load the configuration in your `boot()` method:
 
 ``` php
 $this->app
-     ->make('pragmarx.yaml-conf')
+     ->make('pragmarx.yaml')
      ->loadToConfig($this->getConfigFile(), 'my-package');
 ```
 
@@ -159,4 +159,4 @@ This package is licensed under the MIT License - see the `LICENSE` file for deta
 Pull requests and issues are welcome.
 
 
-<!--[![Downloads](https://img.shields.io/packagist/dt/pragmarx/yaml-conf.svg?style=flat-square)](https://packagist.org/packages/pragmarx/yaml-conf)-->
+<!--[![Downloads](https://img.shields.io/packagist/dt/pragmarx/yaml.svg?style=flat-square)](https://packagist.org/packages/pragmarx/yaml)-->
