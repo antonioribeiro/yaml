@@ -1,8 +1,5 @@
-/vendor
+vendor
 composer.phar
 composer.lock
-.DS_Store
-.idea
-/node_modules
-/coverage
-/tests/tmp
+coverage
+tests/tmp
