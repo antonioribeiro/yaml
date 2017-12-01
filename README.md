@@ -19,15 +19,13 @@
 
 ## Rationale
 
-Config files getting bigger, harder to maintain and look at, every day. Use Yaml format to load them!:
+Config files getting bigger, harder to maintain and look at, every day. Why not just use YAML to load them?
 
-```
-app-version:
-  major: 1
-  minor: 0
-  patch: 0
-  format: "{$major}.{$minor}.{$patch}"
-```
+### Which one is easier to look at and deal with?
+
+<p align="center">
+    <img src="docs/yaml-php.png">
+</p>
 
 ## Key features
 
