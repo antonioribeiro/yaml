@@ -32,13 +32,13 @@ Config files getting bigger, harder to maintain and look at, every day. Why not 
 ### Load one file to Laravel config 
 
 ``` php
-Yaml::loadToConfig(config_path('myapp.yml'), 'my-app');
+Yaml::loadToConfig(config_path('myapp.yml'), 'my-app-conf');
 ```
 
 ## Or a whole directory, recursively, so all those files would be loaded with a single command
 
 ``` php
-Yaml::loadToConfig(config_path('myapp'), 'my-app');
+Yaml::loadToConfig(config_path('myapp'), 'my-app-conf');
 ```
 
 To load a directory with all your config files:
@@ -60,7 +60,7 @@ To load a directory with all your config files:
 Then you would just have to use it like you usually do in Laravel
 
 ``` php
-config('myapp.multiple.second-level.third-level.alter.person.name')
+config('my-app-conf.multiple.second-level.third-level.alter.person.name')
 ```
 
 ### Execute functions, like in the usual Laravel PHP array config.
