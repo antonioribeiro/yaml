@@ -1,4 +1,4 @@
-# Laravel YAML
+# YAML
 ### A Laravel YAML parser and config loader
 
 <p align="center">
@@ -21,7 +21,7 @@
 
 Config files getting bigger, harder to maintain and look at, every day. Why not just use YAML to load them?
 
-### Which one is easier to look at and deal with?
+#### Which one is cleaner?
 
 <p align="center">
     <img src="docs/yaml-php.png">
