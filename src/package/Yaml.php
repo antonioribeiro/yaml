@@ -97,11 +97,11 @@ class Yaml
      * Replace keys to self.
      *
      * @param $string
-     * @param $keys
+     * @param $keys Collection
      *
      * @return mixed
      */
-    public function replaceKeysToSelf($string, $keys)
+    public function replaceKeysToSelf($string, Collection $keys)
     {
         preg_match_all("/\{\{'((?:[^{}]|(?R))*)\'\}\}/", $string, $matches);
 
