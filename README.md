@@ -2,6 +2,10 @@
 ### A Laravel YAML parser and config loader
 
 <p align="center">
+    <img src="https://buddy.works/data/blog/_thumbnails/yaml-cover.png">
+</p>
+
+<p align="center">
     <a href="https://packagist.org/packages/pragmarx/yaml"><img alt="Latest Stable Version" src="https://img.shields.io/packagist/v/pragmarx/yaml.svg?style=flat-square"></a>
     <a href="/antonioribeiro/yaml/blob/master/LICENSE.md"><img alt="License" src="https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square"></a>
     <a href="https://scrutinizer-yaml.com/g/antonioribeiro/yaml/?branch=master"><img alt="Code Quality" src="https://img.shields.io/scrutinizer/g/antonioribeiro/yaml.svg?style=flat-square"></a>
