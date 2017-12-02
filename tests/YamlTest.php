@@ -104,6 +104,13 @@ class YamlTest extends TestCase
         $this->yaml->parse('version = 1');
     }
 
+    public function test_can_parse_file()
+    {
+        $array = $this->yaml->parseFile(__DIR__.'/stubs/conf/multiple/second-level/third-level/app.yml');
+
+        $this->assertEquals('Brazil Third Level', array_get($array, 'person.address.country'));
+    }
+
     public function cleanYamlString($string)
     {
         return str_replace(

@@ -4,6 +4,7 @@ namespace PragmaRX\Yaml\Package\Support;
 
 use Illuminate\Support\Collection;
 use PragmaRX\Yaml\Package\Exceptions\InvalidYamlFile;
+use Symfony\Component\Yaml\Parser as SymfonyParser;
 use Symfony\Component\Yaml\Yaml as SymfonyYaml;
 
 trait Parser
@@ -86,7 +87,7 @@ trait Parser
     public function parseFile($filename, $flags = 0)
     {
         return $this->checkYaml(
-            SymfonyYaml::parseFile($filename, $flags)
+            (new SymfonyParser())->parseFile($filename, $flags)
         );
     }
 
