@@ -29,10 +29,10 @@ class Yaml
     /**
      * Version constructor.
      *
-     * @param File|null $file
+     * @param File|null   $file
      * @param Parser|null $parser
      */
-    public function __construct(File $file = null, Parser $parser= null)
+    public function __construct(File $file = null, Parser $parser = null)
     {
         $this->instantiate($file, $parser);
     }
@@ -50,7 +50,7 @@ class Yaml
             'parser',
             Parser::class,
             [
-                $this->instantiateClass($file, 'file', File::class)
+                $this->instantiateClass($file, 'file', File::class),
             ]
         );
     }
@@ -61,8 +61,8 @@ class Yaml
      * @param $instance  object
      * @param $property  string
      * @param $class     string
-     *
      * @param array $arguments
+     *
      * @return object|Yaml
      */
     protected function instantiateClass($instance, $property, $class = null, $arguments = [])
