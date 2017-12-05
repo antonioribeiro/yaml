@@ -10,16 +10,6 @@ use Symfony\Component\Yaml\Yaml as SymfonyYaml;
 class Parser
 {
     /**
-     * @var File
-     */
-    private $file;
-
-    public function __construct(File $file)
-    {
-        $this->file = $file;
-    }
-
-    /**
      * Dump array to yaml.
      *
      * @param $input

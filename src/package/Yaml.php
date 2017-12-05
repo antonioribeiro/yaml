@@ -45,14 +45,9 @@ class Yaml
      */
     protected function instantiate($file, $parser)
     {
-        $this->instantiateClass(
-            $parser,
-            'parser',
-            Parser::class,
-            [
-                $this->instantiateClass($file, 'file', File::class)
-            ]
-        );
+        $this->instantiateClass($file, 'file', File::class);
+
+        $this->instantiateClass($parser, 'parser', Parser::class);
     }
 
     /**
