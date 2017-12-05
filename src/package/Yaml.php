@@ -3,13 +3,13 @@
 namespace PragmaRX\Yaml\Package;
 
 use Illuminate\Support\Collection;
+use PragmaRX\Yaml\Package\Exceptions\MethodNotFound;
 use PragmaRX\Yaml\Package\Support\File;
 use PragmaRX\Yaml\Package\Support\Parser;
+use PragmaRX\Yaml\Package\Support\Resolver;
 
 class Yaml
 {
-    const NOT_RESOLVED = '!!__FUNCTION_NOT_RESOLVED__!!';
-
     protected $replaced = 0;
 
     /**
@@ -27,14 +27,22 @@ class Yaml
     protected $parser;
 
     /**
+     * Resolver object.
+     *
+     * @var \PragmaRX\Yaml\Package\Support\Resolver
+     */
+    protected $resolver;
+
+    /**
      * Version constructor.
      *
      * @param File|null $file
      * @param Parser|null $parser
+     * @param Resolver|null $resolver
      */
-    public function __construct(File $file = null, Parser $parser= null)
+    public function __construct(File $file = null, Parser $parser= null, Resolver $resolver = null)
     {
-        $this->instantiate($file, $parser);
+        $this->instantiate($file, $parser, $resolver);
     }
 
     /**
@@ -42,12 +50,36 @@ class Yaml
      *
      * @param $file
      * @param $parser
+     * @param $resolver
      */
-    protected function instantiate($file, $parser)
+    protected function instantiate($file, $parser, $resolver)
     {
         $this->instantiateClass($file, 'file', File::class);
 
         $this->instantiateClass($parser, 'parser', Parser::class);
+
+        $this->instantiateClass($resolver, 'resolver', Resolver::class);
+    }
+
+    /**
+     * Dynamically call format types.
+     *
+     * @param $name
+     * @param array $arguments
+     *
+     * @throws MethodNotFound
+     *
+     * @return mixed
+     */
+    public function __call($name, array $arguments)
+    {
+        foreach (['file', 'parser'] as $object) {
+            if (method_exists($this->{$object}, $name)) {
+                return call_user_func_array([$this->{$object}, $name], $arguments);
+            }
+        }
+
+        throw new MethodNotFound("Method '{$name}' doesn't exists in this object.");
     }
 
     /**
@@ -83,7 +115,7 @@ class Yaml
                 : $this->loadFromDirectory($path)
         );
 
-        return $this->findAndReplaceExecutableCodeToExhaustion($loaded, $configKey);
+        return $this->resolver->findAndReplaceExecutableCodeToExhaustion($loaded, $configKey);
     }
 
     /**
@@ -98,33 +130,6 @@ class Yaml
         return $this->listFiles($path)->mapWithKeys(function ($file, $key) {
             return [$key => $this->loadFile($file)];
         });
-    }
-
-    /**
-     * Get all files from dir.
-     *
-     * @param $directory
-     *
-     * @return \Illuminate\Support\Collection
-     */
-    public function listFiles($directory)
-    {
-        return $this->file->listFiles($directory);
-    }
-
-    /**
-     * Dump array to yaml.
-     *
-     * @param $input
-     * @param int $inline
-     * @param int $indent
-     * @param int $flags
-     *
-     * @return string
-     */
-    public function dump($input, $inline = 5, $indent = 4, $flags = 0)
-    {
-        return $this->parser->dump($input, $inline, $indent, $flags);
     }
 
     /**
@@ -143,169 +148,6 @@ class Yaml
         }
 
         return $this->parser->parseFile($file);
-    }
-
-    /**
-     * Remove quotes.
-     *
-     * @param $string
-     *
-     * @return string
-     */
-    protected function removeQuotes($string)
-    {
-        return trim(trim($string, "'"), '"');
-    }
-
-    /**
-     * Exhaustively find and replace executable code.
-     *
-     * @param $contents
-     *
-     * @return Collection
-     */
-    public function findAndReplaceExecutableCodeToExhaustion($contents, $configKey)
-    {
-        do {
-            $this->replaced = 0;
-
-            $contents = $this->recursivelyFindAndReplaceKeysToSelf(
-                $this->recursivelyFindAndReplaceExecutableCode($contents)
-            );
-
-            config([$configKey => $contents->toArray()]);
-        } while ($this->replaced > 0);
-
-        return $contents;
-    }
-
-    /**
-     * Exhaustively find and replace executable code.
-     *
-     * @param $new
-     *
-     * @return Collection
-     */
-    public function recursivelyFindAndReplaceKeysToSelf($new, $keys = null)
-    {
-        $keys = is_null($keys) ? $new : $keys;
-
-        do {
-            $old = $new;
-
-            if (is_array($old instanceof Collection ? $old->toArray() : $old)) {
-                return collect($old)->map(function ($item) use ($keys) {
-                    return $this->recursivelyFindAndReplaceKeysToSelf($item, $keys);
-                });
-            }
-
-            $new = $this->replaceKeysToSelf($new, $keys);
-        } while ($old !== $new);
-
-        return $new;
-    }
-
-    /**
-     * Replace keys to self.
-     *
-     * @param $string
-     * @param $keys Collection
-     *
-     * @return mixed
-     */
-    public function replaceKeysToSelf($string, Collection $keys)
-    {
-        preg_match_all("/\{\{'((?:[^{}]|(?R))*)\'\}\}/", $string, $matches);
-
-        foreach ($matches[0] as $key => $value) {
-            $string = str_replace($matches[0][$key], array_get($keys->toArray(), $matches[1][$key]), $string);
-        }
-
-        return $string;
-    }
-
-    /**
-     * Replace contents.
-     *
-     * @param $old
-     *
-     * @return Collection
-     */
-    protected function recursivelyFindAndReplaceExecutableCode($old)
-    {
-        if (is_array($old instanceof Collection ? $old->toArray() : $old)) {
-            return collect($old)->map(function ($item) {
-                return $this->recursivelyFindAndReplaceExecutableCode($item);
-            });
-        }
-
-        $new = $this->replaceContents($old);
-
-        if ($new !== $old) {
-            $this->replaced++;
-        }
-
-        return $new;
-    }
-
-    /**
-     * Replace contents.
-     *
-     * @param $contents
-     *
-     * @return mixed
-     */
-    protected function replaceContents($contents)
-    {
-        preg_match_all('/{{(.*)}}/', $contents, $matches);
-
-        foreach ($matches[0] as $key => $match) {
-            if (count($match)) {
-                if (($resolved = $this->resolveVariable($matches[1][$key])) !== self::NOT_RESOLVED) {
-                    $contents = str_replace($matches[0][$key], $resolved, $contents);
-                }
-            }
-        }
-
-        return $contents;
-    }
-
-    /**
-     * Resolve variable.
-     *
-     * @param $key
-     *
-     * @return string
-     */
-    protected function resolveVariable($key)
-    {
-        $key = trim($key);
-
-        if (($result = $this->executeFunction($key)) !== self::NOT_RESOLVED) {
-            return $result;
-        }
-
-        return self::NOT_RESOLVED;
-    }
-
-    /**
-     * Execute function.
-     *
-     * @param $string
-     *
-     * @return mixed
-     */
-    protected function executeFunction($string)
-    {
-        preg_match_all('/(.*)\((.*)\)/', $string, $matches);
-
-        if (count($matches) && count($matches[0])) {
-            $function = $matches[1][0];
-
-            return $function($this->removeQuotes($matches[2][0]));
-        }
-
-        return self::NOT_RESOLVED;
     }
 
     /**
@@ -336,43 +178,5 @@ class Yaml
     public function instance()
     {
         return $this;
-    }
-
-    /**
-     * Convert array to yaml and save.
-     *
-     * @param $array array
-     * @param $file string
-     */
-    public function saveAsYaml($array, $file)
-    {
-        $this->parser->saveAsYaml($array, $file);
-    }
-
-    /**
-     * Parse a yaml file.
-     *
-     * @param $contents
-     *
-     * @return mixed
-     */
-    public function parse($contents)
-    {
-        return $this->parser->parse($contents);
-    }
-
-    /**
-     * Parses a YAML file into a PHP value.
-     *
-     * @param string $filename The path to the YAML file to be parsed
-     * @param int    $flags    A bit field of PARSE_* constants to customize the YAML parser behavior
-     *
-     * @throws \PragmaRX\Yaml\Package\Exceptions\InvalidYamlFile If the file could not be read or the YAML is not valid
-     *
-     * @return mixed The YAML converted to a PHP value
-     */
-    public function parseFile($filename, $flags = 0)
-    {
-        return $this->parser->parseFile($filename, $flags);
     }
 }
