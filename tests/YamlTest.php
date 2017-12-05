@@ -44,7 +44,7 @@ class YamlTest extends TestCase
     {
         $this->assertEquals('Antonio Carlos', config('multiple.app.person.name'));
 
-        $this->assertEquals('Laravel', config('multiple.app.environment.app.name'));
+        $this->assertEquals(config('app.name'), config('multiple.app.environment.app.name'));
 
         $this->assertEquals('Benoit', config('multiple.alter.person.name'));
 
