@@ -36,7 +36,7 @@ class Yaml
     /**
      * Version constructor.
      *
-     * @param File|null $file
+     * @param File|null   $file
      * @param Parser|null $parser
      * @param Resolver|null $resolver
      */
@@ -88,8 +88,8 @@ class Yaml
      * @param $instance  object
      * @param $property  string
      * @param $class     string
-     *
      * @param array $arguments
+     *
      * @return object|Yaml
      */
     protected function instantiateClass($instance, $property, $class = null, $arguments = [])
