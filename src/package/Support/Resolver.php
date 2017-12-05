@@ -141,6 +141,7 @@ class Resolver
      *
      * @param $new
      * @param null $keys
+     *
      * @return Collection
      */
     public function recursivelyFindAndReplaceKeysToSelf($new, $keys = null)
