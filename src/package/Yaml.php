@@ -8,11 +8,69 @@ use PragmaRX\Yaml\Package\Support\Parser;
 
 class Yaml
 {
-    use File, Parser;
-
     const NOT_RESOLVED = '!!__FUNCTION_NOT_RESOLVED__!!';
 
     protected $replaced = 0;
+
+    /**
+     * File class.
+     *
+     * @var \PragmaRX\Yaml\Package\Support\File
+     */
+    protected $file;
+
+    /**
+     * Parser object.
+     *
+     * @var \PragmaRX\Yaml\Package\Support\Parser
+     */
+    protected $parser;
+
+    /**
+     * Version constructor.
+     *
+     * @param File|null $file
+     * @param Parser|null $parser
+     */
+    public function __construct(File $file = null, Parser $parser= null)
+    {
+        $this->instantiate($file, $parser);
+    }
+
+    /**
+     * Instantiate all dependencies.
+     *
+     * @param $file
+     * @param $parser
+     */
+    protected function instantiate($file, $parser)
+    {
+        $this->instantiateClass(
+            $parser,
+            'parser',
+            Parser::class,
+            [
+                $this->instantiateClass($file, 'file', File::class)
+            ]
+        );
+    }
+
+    /**
+     * Instantiate a class.
+     *
+     * @param $instance  object
+     * @param $property  string
+     * @param $class     string
+     *
+     * @param array $arguments
+     * @return object|Yaml
+     */
+    protected function instantiateClass($instance, $property, $class = null, $arguments = [])
+    {
+        return $this->{$property} = is_null($instance)
+            ? $instance = new $class(...$arguments)
+            : $instance;
+    }
 
     /**
      * Load yaml files from directory and add to Laravel config.
@@ -25,12 +83,71 @@ class Yaml
     public function loadToConfig($path, $configKey)
     {
         $loaded = $this->cleanArrayKeysRecursive(
-            $this->isYamlFile($path)
+            $this->file->isYamlFile($path)
                 ? $this->loadFile($path)
                 : $this->loadFromDirectory($path)
         );
 
         return $this->findAndReplaceExecutableCodeToExhaustion($loaded, $configKey);
+    }
+
+    /**
+     * Load all yaml files from a directory.
+     *
+     * @param $path
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public function loadFromDirectory($path)
+    {
+        return $this->listFiles($path)->mapWithKeys(function ($file, $key) {
+            return [$key => $this->loadFile($file)];
+        });
+    }
+
+    /**
+     * Get all files from dir.
+     *
+     * @param $directory
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public function listFiles($directory)
+    {
+        return $this->file->listFiles($directory);
+    }
+
+    /**
+     * Dump array to yaml.
+     *
+     * @param $input
+     * @param int $inline
+     * @param int $indent
+     * @param int $flags
+     *
+     * @return string
+     */
+    public function dump($input, $inline = 5, $indent = 4, $flags = 0)
+    {
+        return $this->parser->dump($input, $inline, $indent, $flags);
+    }
+
+    /**
+     * Load yaml file.
+     *
+     * @param $file
+     *
+     * @return mixed|string
+     */
+    public function loadFile($file)
+    {
+        if (is_array($file)) {
+            return collect($file)->mapWithKeys(function ($subFile, $key) {
+                return [$key => $this->loadFile($subFile)];
+            })->toArray();
+        }
+
+        return $this->parser->parseFile($file);
     }
 
     /**
@@ -197,24 +314,6 @@ class Yaml
     }
 
     /**
-     * Load yaml file.
-     *
-     * @param $file
-     *
-     * @return mixed|string
-     */
-    public function loadFile($file)
-    {
-        if (is_array($file)) {
-            return collect($file)->mapWithKeys(function ($subFile, $key) {
-                return [$key => $this->loadFile($subFile)];
-            })->toArray();
-        }
-
-        return $this->parseFile($file);
-    }
-
-    /**
      * Remove extension from file name.
      *
      * @param $dirty
@@ -226,26 +325,12 @@ class Yaml
         if (is_array($dirty instanceof Collection ? $dirty->toArray() : $dirty)) {
             return collect($dirty)->mapWithKeys(function ($item, $key) {
                 return [
-                    $this->cleanKey($key) => $this->cleanArrayKeysRecursive($item),
+                    $this->file->cleanKey($key) => $this->cleanArrayKeysRecursive($item),
                 ];
             });
         }
 
         return $dirty;
-    }
-
-    /**
-     * Clean the array key.
-     *
-     * @param $key
-     *
-     * @return mixed|string
-     */
-    public function cleanKey($key)
-    {
-        return is_string($key) && file_exists(trim($key))
-            ? preg_replace('/\.[^.]+$/', '', basename($key))
-            : $key;
     }
 
     /**
@@ -256,5 +341,43 @@ class Yaml
     public function instance()
     {
         return $this;
+    }
+
+    /**
+     * Convert array to yaml and save.
+     *
+     * @param $array array
+     * @param $file string
+     */
+    public function saveAsYaml($array, $file)
+    {
+        $this->parser->saveAsYaml($array, $file);
+    }
+
+    /**
+     * Parse a yaml file.
+     *
+     * @param $contents
+     *
+     * @return mixed
+     */
+    public function parse($contents)
+    {
+        return $this->parser->parse($contents);
+    }
+
+    /**
+     * Parses a YAML file into a PHP value.
+     *
+     * @param string $filename The path to the YAML file to be parsed
+     * @param int    $flags    A bit field of PARSE_* constants to customize the YAML parser behavior
+     *
+     * @throws \PragmaRX\Yaml\Package\Exceptions\InvalidYamlFile If the file could not be read or the YAML is not valid
+     *
+     * @return mixed The YAML converted to a PHP value
+     */
+    public function parseFile($filename, $flags = 0)
+    {
+        return $this->parser->parseFile($filename, $flags);
     }
 }

@@ -2,7 +2,7 @@
 
 namespace PragmaRX\Yaml\Package\Support;
 
-trait File
+class File
 {
     /**
      * Check if the string is a directory.
@@ -11,7 +11,7 @@ trait File
      *
      * @return bool
      */
-    protected function isAllowedDirectory($item)
+    public function isAllowedDirectory($item)
     {
         return
             is_dir($item) &&
@@ -34,7 +34,7 @@ trait File
 
         return $this->scanDir($directory)->reject(function ($item) {
             return !$this->isAllowedDirectory($item) && !$this->isYamlFile($item);
-        })->mapWithKeys(function ($item, $key) {
+        })->mapWithKeys(function ($item) {
             if (is_dir($item)) {
                 return [basename($item) => $this->listFiles($item)->toArray()];
             }
@@ -44,17 +44,19 @@ trait File
     }
 
     /**
-     * Load all yaml files from a directory.
+     * Check if the file is a yaml file.
      *
-     * @param $path
+     * @param $item
      *
-     * @return \Illuminate\Support\Collection
+     * @return bool
      */
-    public function loadFromDirectory($path)
+    public function isYamlFile($item)
     {
-        return $this->listFiles($path)->mapWithKeys(function ($file, $key) {
-            return [$key => $this->loadFile($file)];
-        });
+        return
+            $this->isFile($item) && (
+                ends_with(strtolower($item), '.yml') ||
+                ends_with(strtolower($item), '.yaml')
+            );
     }
 
     /**
@@ -76,10 +78,24 @@ trait File
      *
      * @return \Illuminate\Support\Collection
      */
-    protected function scanDir($dir)
+    public function scanDir($dir)
     {
         return collect(scandir($dir))->map(function ($item) use ($dir) {
             return $dir.DIRECTORY_SEPARATOR.$item;
         });
+    }
+
+    /**
+     * Clean the array key.
+     *
+     * @param $key
+     *
+     * @return mixed|string
+     */
+    public function cleanKey($key)
+    {
+        return is_string($key) && file_exists(trim($key))
+            ? preg_replace('/\.[^.]+$/', '', basename($key))
+            : $key;
     }
 }

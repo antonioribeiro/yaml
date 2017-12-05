@@ -29,8 +29,8 @@ class ServiceProvider extends IlluminateServiceProvider
      */
     private function registerService()
     {
-        $this->app->singleton('pragmarx.yaml', function (Application $app) {
-            return $app->make(Yaml::class);
+        $this->app->singleton('pragmarx.yaml', function () {
+            return new Yaml();
         });
     }
 }

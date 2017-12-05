@@ -7,8 +7,18 @@ use PragmaRX\Yaml\Package\Exceptions\InvalidYamlFile;
 use Symfony\Component\Yaml\Parser as SymfonyParser;
 use Symfony\Component\Yaml\Yaml as SymfonyYaml;
 
-trait Parser
+class Parser
 {
+    /**
+     * @var File
+     */
+    private $file;
+
+    public function __construct(File $file)
+    {
+        $this->file = $file;
+    }
+
     /**
      * Dump array to yaml.
      *
@@ -22,22 +32,6 @@ trait Parser
     public function dump($input, $inline = 5, $indent = 4, $flags = 0)
     {
         return SymfonyYaml::dump($input, $inline, $indent, $flags);
-    }
-
-    /**
-     * Check if the file is a yaml file.
-     *
-     * @param $item
-     *
-     * @return bool
-     */
-    protected function isYamlFile($item)
-    {
-        return
-            $this->isFile($item) && (
-                ends_with(strtolower($item), '.yml') ||
-                ends_with(strtolower($item), '.yaml')
-            );
     }
 
     /**
