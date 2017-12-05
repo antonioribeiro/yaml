@@ -139,7 +139,7 @@ class Resolver
      * Exhaustively find and replace executable code.
      *
      * @param $new
-     *
+     * @param null $keys
      * @return Collection
      */
     public function recursivelyFindAndReplaceKeysToSelf($new, $keys = null)

@@ -125,7 +125,7 @@ class Yaml
      */
     public function loadFromDirectory($path)
     {
-        return $this->listFiles($path)->mapWithKeys(function ($file, $key) {
+        return $this->file->listFiles($path)->mapWithKeys(function ($file, $key) {
             return [$key => $this->loadFile($file)];
         });
     }
