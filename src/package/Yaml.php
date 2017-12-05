@@ -10,8 +10,6 @@ use PragmaRX\Yaml\Package\Support\Resolver;
 
 class Yaml
 {
-    protected $replaced = 0;
-
     /**
      * File class.
      *

@@ -4,6 +4,7 @@ namespace PragmaRX\Yaml\Tests;
 
 use Illuminate\Support\Collection;
 use PragmaRX\Yaml\Package\Exceptions\InvalidYamlFile;
+use PragmaRX\Yaml\Package\Exceptions\MethodNotFound;
 use PragmaRX\Yaml\Package\Facade as YamlFacade;
 use PragmaRX\Yaml\Package\Yaml as YamlService;
 
@@ -109,6 +110,13 @@ class YamlTest extends TestCase
         $array = $this->yaml->parseFile(__DIR__.'/stubs/conf/multiple/second-level/third-level/app.yml');
 
         $this->assertEquals('Brazil Third Level', array_get($array, 'person.address.country'));
+    }
+
+    public function test_method_not_found()
+    {
+        $this->expectException(MethodNotFound::class);
+
+        $this->yaml->inexistentMethod();
     }
 
     public function cleanYamlString($string)

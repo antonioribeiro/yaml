@@ -6,6 +6,17 @@ use Illuminate\Support\Collection;
 
 class Resolver
 {
+    protected $replaced = 0;
+
+    /**
+     * @param $old
+     * @return bool
+     */
+    private function isArray($old)
+    {
+        return is_array($old instanceof Collection ? $old->toArray() : $old);
+    }
+
     /**
      * Replace contents.
      *
@@ -75,7 +86,7 @@ class Resolver
      */
     public function recursivelyFindAndReplaceExecutableCode($old)
     {
-        if (is_array($old instanceof Collection ? $old->toArray() : $old)) {
+        if ($this->isArray($old)) {
             return collect($old)->map(function ($item) {
                 return $this->recursivelyFindAndReplaceExecutableCode($item);
             });
@@ -138,7 +149,7 @@ class Resolver
         do {
             $old = $new;
 
-            if (is_array($old instanceof Collection ? $old->toArray() : $old)) {
+            if ($this->isArray($old)) {
                 return collect($old)->map(function ($item) use ($keys) {
                     return $this->recursivelyFindAndReplaceKeysToSelf($item, $keys);
                 });
