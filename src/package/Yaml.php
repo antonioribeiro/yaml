@@ -36,11 +36,11 @@ class Yaml
     /**
      * Version constructor.
      *
-     * @param File|null   $file
-     * @param Parser|null $parser
+     * @param File|null     $file
+     * @param Parser|null   $parser
      * @param Resolver|null $resolver
      */
-    public function __construct(File $file = null, Parser $parser= null, Resolver $resolver = null)
+    public function __construct(File $file = null, Parser $parser = null, Resolver $resolver = null)
     {
         $this->instantiate($file, $parser, $resolver);
     }
