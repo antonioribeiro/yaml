@@ -10,6 +10,7 @@ class Resolver
 
     /**
      * @param $old
+     *
      * @return bool
      */
     private function isArray($old)
