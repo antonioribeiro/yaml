@@ -30,7 +30,7 @@ class Resolver
         preg_match_all('/{{(.*)}}/', $contents, $matches);
 
         foreach ($matches[0] as $key => $match) {
-            if (count($match)) {
+            if (!empty($match)) {
                 if (($resolved = $this->resolveVariable($matches[1][$key])) !== Constants::NOT_RESOLVED) {
                     $contents = str_replace($matches[0][$key], $resolved, $contents);
                 }
