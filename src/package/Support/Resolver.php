@@ -69,7 +69,7 @@ class Resolver
     {
         preg_match_all('/(.*)\((.*)\)/', $string, $matches);
 
-        if (count($matches) && count($matches[0])) {
+        if (count($matches) > 0 && is_array($matches[0]) && count($matches[0]) > 0) {
             $function = $matches[1][0];
 
             return $function($this->removeQuotes($matches[2][0]));
