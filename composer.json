@@ -45,5 +45,12 @@
                 "Yaml": "PragmaRX\\Yaml\\Package\\Facade"
             }
         }
+    },
+
+    "scripts": {
+        "test": [
+            "@composer install",
+            "vendor/bin/phpunit"
+        ]
     }
 }
