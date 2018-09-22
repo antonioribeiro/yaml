@@ -10,7 +10,7 @@ use Symfony\Component\Yaml\Yaml as SymfonyYaml;
 class Parser
 {
     /**
-     * Dump array to yaml.
+     * Dump array to yaml.InvalidYamlFile
      *
      * @param $input
      * @param int $inline
@@ -70,9 +70,13 @@ class Parser
      */
     public function parseFile($filename, $flags = 0)
     {
-        return $this->checkYaml(
-            (new SymfonyParser())->parseFile($filename, $flags)
-        );
+        try {
+            return $this->checkYaml(
+                (new SymfonyParser())->parseFile($filename, $flags)
+            );
+        } catch (\Symfony\Component\Yaml\Exception\ParseException $exception) {
+            throw new InvalidYamlFile();
+        }
     }
 
     /**
