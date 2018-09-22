@@ -10,7 +10,7 @@ use Symfony\Component\Yaml\Yaml as SymfonyYaml;
 class Parser
 {
     /**
-     * Dump array to yaml.InvalidYamlFile
+     * Dump array to yaml.InvalidYamlFile.
      *
      * @param $input
      * @param int $inline
