@@ -1,5 +1,5 @@
 {
-    "name": "pragmarx/yaml",
+    "name": "caiquebb/yaml",
     "description": "Load your Laravel config files using yaml",
     "keywords": [
         "laravel",
@@ -16,7 +16,7 @@
     ],
     "require": {
         "php": "^7.0",
-        "laravel/framework": ">=5.5.33",
+        "illuminate/support": ">=5.5.33",
         "symfony/yaml": "^3.4|^4.0"
     },
     "require-dev": {
