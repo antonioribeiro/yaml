@@ -1,5 +1,5 @@
 {
-    "name": "caiquebb/yaml",
+    "name": "pragmarx/yaml",
     "description": "Load your Laravel config files using yaml",
     "keywords": [
         "laravel",
