@@ -17,8 +17,8 @@ class File
     {
         return
             is_dir($item) &&
-            !Str::ends_with($item, DIRECTORY_SEPARATOR.'.') &&
-            !Str::ends_with($item, DIRECTORY_SEPARATOR.'..');
+            !Str::endsWith($item, DIRECTORY_SEPARATOR.'.') &&
+            !Str::endsWith($item, DIRECTORY_SEPARATOR.'..');
     }
 
     /**
@@ -56,8 +56,8 @@ class File
     {
         return
             $this->isFile($item) && (
-                Str::ends_with(strtolower($item), '.yml') ||
-                Str::ends_with(strtolower($item), '.yaml')
+                Str::endsWith(strtolower($item), '.yml') ||
+                Str::endsWith(strtolower($item), '.yaml')
             );
     }
 
