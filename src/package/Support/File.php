@@ -2,6 +2,8 @@
 
 namespace PragmaRX\Yaml\Package\Support;
 
+use Illuminate\Support\Str;
+
 class File
 {
     /**
@@ -15,8 +17,8 @@ class File
     {
         return
             is_dir($item) &&
-            !ends_with($item, DIRECTORY_SEPARATOR.'.') &&
-            !ends_with($item, DIRECTORY_SEPARATOR.'..');
+            !Str::endsWith($item, DIRECTORY_SEPARATOR.'.') &&
+            !Str::endsWith($item, DIRECTORY_SEPARATOR.'..');
     }
 
     /**
@@ -54,8 +56,8 @@ class File
     {
         return
             $this->isFile($item) && (
-                ends_with(strtolower($item), '.yml') ||
-                ends_with(strtolower($item), '.yaml')
+                Str::endsWith(strtolower($item), '.yml') ||
+                Str::endsWith(strtolower($item), '.yaml')
             );
     }
 
