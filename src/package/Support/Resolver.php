@@ -2,8 +2,8 @@
 
 namespace PragmaRX\Yaml\Package\Support;
 
-use Illuminate\Support\Collection;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
 
 class Resolver
 {
