@@ -26,7 +26,7 @@ class YamlTest extends TestCase
      */
     private $multiple;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setup();
 
