@@ -15,8 +15,8 @@ class File
     {
         return
             is_dir($item) &&
-            !ends_with($item, DIRECTORY_SEPARATOR.'.') &&
-            !ends_with($item, DIRECTORY_SEPARATOR.'..');
+            !\Illuminate\Support\Str::endsWith($item, DIRECTORY_SEPARATOR.'.') &&
+            !\Illuminate\Support\Str::endsWith($item, DIRECTORY_SEPARATOR.'..');
     }
 
     /**
@@ -54,8 +54,8 @@ class File
     {
         return
             $this->isFile($item) && (
-                ends_with(strtolower($item), '.yml') ||
-                ends_with(strtolower($item), '.yaml')
+                \Illuminate\Support\Str::endsWith(strtolower($item), '.yml') ||
+                \Illuminate\Support\Str::endsWith(strtolower($item), '.yaml')
             );
     }
 
