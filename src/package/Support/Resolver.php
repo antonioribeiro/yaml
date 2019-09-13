@@ -2,6 +2,7 @@
 
 namespace PragmaRX\Yaml\Package\Support;
 
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 
 class Resolver
@@ -176,7 +177,7 @@ class Resolver
         preg_match_all("/\{\{'((?:[^{}]|(?R))*)\'\}\}/", $string, $matches);
 
         foreach ($matches[0] as $key => $value) {
-            $string = str_replace($matches[0][$key], array_get($keys->toArray(), $matches[1][$key]), $string);
+            $string = str_replace($matches[0][$key], Arr::get($keys->toArray(), $matches[1][$key]), $string);
         }
 
         return $string;
