@@ -15,8 +15,8 @@
         }
     ],
     "require": {
-        "php": "^7.0",
-        "laravel/framework": ">=5.5.33",
+        "php": ">=7.0",
+        "illuminate/support": ">=5.5.33",
         "symfony/yaml": "^3.4|^4.0"
     },
     "require-dev": {
