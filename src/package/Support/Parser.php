@@ -85,12 +85,12 @@ class Parser
      * @param $array array
      * @param $file string
      */
-    public function saveAsYaml($array, $file)
+    public function saveAsYaml($array, $file, $inline = 2, $indent = 4, $flags = 0)
     {
         $array = $array instanceof Collection
             ? $array->toArray()
             : (array) $array;
 
-        file_put_contents($file, SymfonyYaml::dump($array));
+        file_put_contents($file, SymfonyYaml::dump($array, $inline, $indent, $flags));
     }
 }
