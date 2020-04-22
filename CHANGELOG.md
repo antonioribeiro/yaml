@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.0.0] - 2020-04-22
+### Added
+- Add support for Laravel 7 and Symfony 5
+
 ## [0.1.6] - 2018-02-10
 ### Added
 - Support for Laravel 5.6 and Symfony 4
