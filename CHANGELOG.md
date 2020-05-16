@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.1.0] - 2020-05-16
+### Added
+- Better error message when the yaml file is invalid.
+### Fixed
+- Merge with the Laravel config with the same name
+
 ## [0.1.6] - 2018-02-10
 ### Added
 - Support for Laravel 5.6 and Symfony 4
