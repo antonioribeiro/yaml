@@ -75,7 +75,11 @@ class Parser
                 (new SymfonyParser())->parseFile($filename, $flags)
             );
         } catch (\Symfony\Component\Yaml\Exception\ParseException $exception) {
-            throw new InvalidYamlFile();
+            throw new InvalidYamlFile(
+                sprintf('%s is not valid YAML: %s', $filename, $exception->getMessage()),
+                $exception->getCode(),
+                $exception
+            );
         }
     }
 
