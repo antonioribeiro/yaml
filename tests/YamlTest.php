@@ -58,6 +58,21 @@ class YamlTest extends TestCase
         $this->assertEquals('Benoit', config('multiple.second-level.third-level.alter.person.name'));
     }
 
+    public function test_can_load_and_merge_with_laravel_config()
+    {
+        $laravelConfig1 = ['key' => 'value'];
+        $laravelConfig2 = ['key' => 'value'];
+        config(['mix.alter' => $laravelConfig1]);
+        config(['mix.second-level.third-level.alter' => $laravelConfig2]);
+
+        $this->yaml->loadToConfig(__DIR__.'/stubs/conf/multiple', 'mix');
+
+        $this->assertEquals($laravelConfig1, config('mix.alter'));
+        $this->assertEquals(config('multiple.app'), config('mix.app'));
+        $this->assertEquals($laravelConfig2, config('mix.second-level.third-level.alter'));
+        $this->assertNull(config('mix.second-level.third-level.app'));
+    }
+
     public function test_can_list_files()
     {
         $this->assertEquals(3, $this->yaml->listFiles(__DIR__.'/stubs/conf/multiple')->count());

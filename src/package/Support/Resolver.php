@@ -131,7 +131,7 @@ class Resolver
                 $this->recursivelyFindAndReplaceExecutableCode($contents)
             );
 
-            config([$configKey => $contents->toArray()]);
+            config([$configKey => array_merge($contents->toArray(), config($configKey, []))]);
         } while ($this->replaced > 0);
 
         return $contents;
