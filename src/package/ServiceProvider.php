@@ -3,6 +3,8 @@
 namespace PragmaRX\Yaml\Package;
 
 use Illuminate\Support\ServiceProvider as IlluminateServiceProvider;
+use PragmaRX\Yaml\Package\Support\Parser;
+use PragmaRX\Yaml\Package\Support\SymfonyParser;
 
 class ServiceProvider extends IlluminateServiceProvider
 {
@@ -28,8 +30,9 @@ class ServiceProvider extends IlluminateServiceProvider
      */
     private function registerService()
     {
-        $this->app->singleton('pragmarx.yaml', function () {
-            return new Yaml();
+        $this->app->bind(Parser::class, SymfonyParser::class);
+        $this->app->singleton('pragmarx.yaml', function ($app) {
+            return new Yaml(null, $app->make(Parser::class), null);
         });
     }
 }

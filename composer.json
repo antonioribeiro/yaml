@@ -40,6 +40,9 @@
             }
         }
     },
+    "suggest": {
+        "ext-yaml": "Required to use the PECL YAML."
+    },
     "scripts": {
         "test": [
             "@composer install",

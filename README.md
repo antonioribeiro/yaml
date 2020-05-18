@@ -135,6 +135,14 @@ And it's merged to your Laravel config:
 config('my-package.name');
 ```
 
+## Utilize PECL YAML
+
+To utilize the PECL YAML, you should [install the PECL YAML extension](https://www.php.net/manual/en/yaml.installation.php) and register the binding in the `register()` method of your service provider:
+
+```php
+$this->app->bind(\PragmaRX\Yaml\Package\Support\Parser::class, \PragmaRX\Yaml\Package\Support\PeclParser::class);
+```
+
 ## Example
 
 This is a YAML file from another package using this package:

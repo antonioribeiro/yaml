@@ -2,12 +2,12 @@
 
 namespace PragmaRX\Yaml\Package\Support;
 
-use Illuminate\Support\Collection;
 use PragmaRX\Yaml\Package\Exceptions\InvalidYamlFile;
-use Symfony\Component\Yaml\Parser as SymfonyParser;
-use Symfony\Component\Yaml\Yaml as SymfonyYaml;
 
-class Parser
+/**
+ * @codeCoverageIgnore
+ */
+interface Parser
 {
     /**
      * Dump array to yaml.InvalidYamlFile.
@@ -19,10 +19,7 @@ class Parser
      *
      * @return string
      */
-    public function dump($input, $inline = 5, $indent = 4, $flags = 0)
-    {
-        return SymfonyYaml::dump($input, $inline, $indent, $flags);
-    }
+    public function dump($input, $inline = 5, $indent = 4, $flags = 0);
 
     /**
      * Parse a yaml file.
@@ -33,12 +30,7 @@ class Parser
      *
      * @return mixed
      */
-    public function parse($contents)
-    {
-        return $this->checkYaml(
-            SymfonyYaml::parse($contents)
-        );
-    }
+    public function parse($contents);
 
     /**
      * Check parsed contents.
@@ -49,14 +41,7 @@ class Parser
      *
      * @return array
      */
-    public function checkYaml($contents)
-    {
-        if (is_string($contents)) {
-            throw new InvalidYamlFile();
-        }
-
-        return $contents;
-    }
+    public function checkYaml($contents);
 
     /**
      * Parses a YAML file into a PHP value.
@@ -68,20 +53,7 @@ class Parser
      *
      * @return mixed The YAML converted to a PHP value
      */
-    public function parseFile($filename, $flags = 0)
-    {
-        try {
-            return $this->checkYaml(
-                (new SymfonyParser())->parseFile($filename, $flags)
-            );
-        } catch (\Symfony\Component\Yaml\Exception\ParseException $exception) {
-            throw new InvalidYamlFile(
-                sprintf('%s is not valid YAML: %s', $filename, $exception->getMessage()),
-                $exception->getCode(),
-                $exception
-            );
-        }
-    }
+    public function parseFile($filename, $flags = 0);
 
     /**
      * Convert array to yaml and save.
@@ -89,12 +61,5 @@ class Parser
      * @param $array array
      * @param $file string
      */
-    public function saveAsYaml($array, $file, $inline = 2, $indent = 4, $flags = 0)
-    {
-        $array = $array instanceof Collection
-            ? $array->toArray()
-            : (array) $array;
-
-        file_put_contents($file, SymfonyYaml::dump($array, $inline, $indent, $flags));
-    }
+    public function saveAsYaml($array, $file, $inline = 2, $indent = 4, $flags = 0);
 }
