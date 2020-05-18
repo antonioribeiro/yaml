@@ -96,8 +96,6 @@ class File
      */
     public function cleanKey($key)
     {
-        return is_string($key) && file_exists(trim($key))
-            ? preg_replace('/\.[^.]+$/', '', basename($key))
-            : $key;
+        return preg_replace('/\.[^.]+$/', '', basename($key));
     }
 }

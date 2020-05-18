@@ -107,11 +107,9 @@ class Yaml
      */
     public function loadToConfig($path, $configKey)
     {
-        $loaded = $this->cleanArrayKeysRecursive(
-            $this->file->isYamlFile($path)
-                ? $this->loadFile($path)
-                : $this->loadFromDirectory($path)
-        );
+        $loaded = $this->file->isYamlFile($path)
+            ? $this->loadFile($path)
+            : $this->loadFromDirectory($path);
 
         return $this->resolver->findAndReplaceExecutableCodeToExhaustion($loaded, $configKey);
     }
@@ -146,26 +144,6 @@ class Yaml
         }
 
         return $this->parser->parseFile($file);
-    }
-
-    /**
-     * Remove extension from file name.
-     *
-     * @param $dirty
-     *
-     * @return \Illuminate\Support\Collection|mixed
-     */
-    public function cleanArrayKeysRecursive($dirty)
-    {
-        if (is_array($dirty instanceof Collection ? $dirty->toArray() : $dirty)) {
-            return collect($dirty)->mapWithKeys(function ($item, $key) {
-                return [
-                    $this->file->cleanKey($key) => $this->cleanArrayKeysRecursive($item),
-                ];
-            });
-        }
-
-        return $dirty;
     }
 
     /**
