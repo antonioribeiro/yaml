@@ -20,6 +20,7 @@ install:
         if [[ "$TRAVIS_PHP_VERSION" == 'nightly' ]]; then
           travis_retry composer update --ignore-platform-reqs --no-interaction --prefer-dist
         else
+          printf '\n' | pecl install yaml
           travis_retry composer update ${COMPOSER_FLAGS} --no-interaction --prefer-dist
         fi
 
@@ -31,9 +32,6 @@ sudo: false
 cache:
   directories:
     - $HOME/.composer/cache
-
-before_script:
-  - printf '\n' | pecl install yaml
 
 script:
   - vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover
