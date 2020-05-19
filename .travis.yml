@@ -8,13 +8,6 @@ php:
   - 7.4
   - nightly
 
-matrix:
-    include:
-        - php: 7.2
-          env: 'COMPOSER_FLAGS="--prefer-stable --prefer-lowest"'
-    allow_failures:
-        - php: nightly
-
 install:
     - |
         if [[ "$TRAVIS_PHP_VERSION" == 'nightly' ]]; then
@@ -23,10 +16,6 @@ install:
           printf '\n' | pecl install yaml
           travis_retry composer update ${COMPOSER_FLAGS} --no-interaction --prefer-dist
         fi
-
-# This triggers builds to run on the new TravisCI infrastructure.
-# See: http://docs.travis-ci.com/user/workers/container-based-infrastructure/
-sudo: false
 
 ## Cache composer
 cache:
