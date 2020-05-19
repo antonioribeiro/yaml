@@ -12,6 +12,10 @@ class PeclYamlTest extends TestCase
 
     public function setUp(): void
     {
+        if (!extension_loaded('yaml')) {
+            $this->markTestSkipped('The PECL YAML extension is not available.');
+        }
+
         parent::setup();
 
         $this->app->bind(Parser::class, PeclParser::class);
