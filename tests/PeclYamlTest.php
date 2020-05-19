@@ -19,6 +19,7 @@ class PeclYamlTest extends TestCase
         parent::setup();
 
         $this->app->bind(Parser::class, PeclParser::class);
+
         $this->yaml = YamlFacade::instance();
 
         $this->multiple = $this->yaml->loadToConfig(__DIR__.'/stubs/conf/multiple', 'multiple');
