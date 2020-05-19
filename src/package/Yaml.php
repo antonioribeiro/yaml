@@ -7,6 +7,7 @@ use PragmaRX\Yaml\Package\Exceptions\MethodNotFound;
 use PragmaRX\Yaml\Package\Support\File;
 use PragmaRX\Yaml\Package\Support\Parser;
 use PragmaRX\Yaml\Package\Support\Resolver;
+use PragmaRX\Yaml\Package\Support\SymfonyParser;
 
 class Yaml
 {
@@ -54,7 +55,7 @@ class Yaml
     {
         $this->instantiateClass($file, 'file', File::class);
 
-        $this->instantiateClass($parser, 'parser', Parser::class);
+        $this->instantiateClass($parser, 'parser', SymfonyParser::class);
 
         $this->instantiateClass($resolver, 'resolver', Resolver::class);
     }

@@ -18,6 +18,7 @@ cache:
     - $HOME/.composer/cache
 
 before_script:
+  - printf '\n' | pecl install yaml
   - travis_retry composer update ${COMPOSER_FLAGS} --no-interaction --prefer-dist
 
 script:

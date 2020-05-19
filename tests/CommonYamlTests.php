@@ -6,10 +6,9 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use PragmaRX\Yaml\Package\Exceptions\InvalidYamlFile;
 use PragmaRX\Yaml\Package\Exceptions\MethodNotFound;
-use PragmaRX\Yaml\Package\Facade as YamlFacade;
 use PragmaRX\Yaml\Package\Yaml as YamlService;
 
-class YamlTest extends TestCase
+trait CommonYamlTests
 {
     /**
      * @var YamlService
@@ -25,17 +24,6 @@ class YamlTest extends TestCase
      * @var Collection
      */
     private $multiple;
-
-    public function setUp(): void
-    {
-        parent::setup();
-
-        $this->yaml = YamlFacade::instance();
-
-        $this->multiple = $this->yaml->loadToConfig(__DIR__.'/stubs/conf/multiple', 'multiple');
-
-        $this->single = $this->yaml->loadToConfig(__DIR__.'/stubs/conf/single/single-app.yml', 'single');
-    }
 
     public function test_can_instantiate_service()
     {
