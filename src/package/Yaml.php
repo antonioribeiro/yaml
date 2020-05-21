@@ -2,6 +2,7 @@
 
 namespace PragmaRX\Yaml\Package;
 
+use App;
 use Illuminate\Support\Collection;
 use PragmaRX\Yaml\Package\Exceptions\MethodNotFound;
 use PragmaRX\Yaml\Package\Support\File;
@@ -108,6 +109,10 @@ class Yaml
      */
     public function loadToConfig($path, $configKey)
     {
+        if (App::configurationIsCached()) {
+            return collect();
+        }
+
         $loaded = $this->file->isYamlFile($path)
             ? $this->loadFile($path)
             : $this->loadFromDirectory($path);

@@ -2,6 +2,7 @@
 
 namespace PragmaRX\Yaml\Tests;
 
+use App;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use PragmaRX\Yaml\Package\Exceptions\InvalidYamlFile;
@@ -121,6 +122,15 @@ trait CommonYamlTests
         $this->expectException(MethodNotFound::class);
 
         $this->yaml->inexistentMethod();
+    }
+
+    public function test_do_not_load_when_configuration_is_cached()
+    {
+        App::shouldReceive('configurationIsCached')->andReturn(true);
+
+        $loaded = $this->yaml->loadToConfig(__DIR__.'/stubs/conf/single', 'single');
+
+        $this->assertEmpty($loaded);
     }
 
     public function cleanYamlString($string)
