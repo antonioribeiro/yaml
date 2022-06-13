@@ -4,11 +4,11 @@ namespace PragmaRX\Yaml\Package;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\App;
+use PragmaRX\Yaml\Package\Exceptions\MethodNotFound;
 use PragmaRX\Yaml\Package\Support\File;
 use PragmaRX\Yaml\Package\Support\Parser;
 use PragmaRX\Yaml\Package\Support\Resolver;
 use PragmaRX\Yaml\Package\Support\SymfonyParser;
-use PragmaRX\Yaml\Package\Exceptions\MethodNotFound;
 
 /**
  * @method parse($string)

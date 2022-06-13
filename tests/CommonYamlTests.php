@@ -5,9 +5,9 @@ namespace PragmaRX\Yaml\Tests;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\App;
-use PragmaRX\Yaml\Package\Yaml as YamlService;
 use PragmaRX\Yaml\Package\Exceptions\InvalidYamlFile;
 use PragmaRX\Yaml\Package\Exceptions\MethodNotFound;
+use PragmaRX\Yaml\Package\Yaml as YamlService;
 
 trait CommonYamlTests
 {
