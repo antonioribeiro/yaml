@@ -2,14 +2,22 @@
 
 namespace PragmaRX\Yaml\Package;
 
-use App;
 use Illuminate\Support\Collection;
-use PragmaRX\Yaml\Package\Exceptions\MethodNotFound;
+use Illuminate\Support\Facades\App;
 use PragmaRX\Yaml\Package\Support\File;
 use PragmaRX\Yaml\Package\Support\Parser;
 use PragmaRX\Yaml\Package\Support\Resolver;
 use PragmaRX\Yaml\Package\Support\SymfonyParser;
+use PragmaRX\Yaml\Package\Exceptions\MethodNotFound;
 
+/**
+ * @method parse($string)
+ * @method dump($string)
+ * @method inexistentMethod();
+ * @method listFiles($path);
+ * @method parseFile($path);
+ * @method saveAsYaml($yaml, $path);
+ */
 class Yaml
 {
     /**
