@@ -48,7 +48,7 @@ class Yaml
      * @param Parser|null   $parser
      * @param Resolver|null $resolver
      */
-    public function __construct(File $file = null, Parser $parser = null, Resolver $resolver = null)
+    public function __construct(?File $file, ?Parser $parser, ?Resolver $resolver)
     {
         $this->instantiate($file, $parser, $resolver);
     }
